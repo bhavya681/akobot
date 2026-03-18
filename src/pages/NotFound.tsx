@@ -82,7 +82,7 @@ const NotFound = () => {
               />
               <div className="absolute inset-[3px] rounded-full overflow-hidden bg-white dark:bg-slate-900 shadow-xl ring-2 ring-black/10 dark:ring-white/20 flex items-center justify-center p-1.5">
                 <img 
-                  src="/logo.png" 
+                  src="/logo.webp" 
                   alt="AEKO" 
                   className="w-full h-full object-contain object-center" 
                 />

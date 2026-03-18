@@ -574,7 +574,7 @@ const AgentLLMPage = () => {
               className="flex items-center gap-2.5 rounded-lg py-1.5 pr-2 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
             >
               <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0">
-                <img src="/logo.png" alt="AEKO" className="w-5 h-5 object-contain" />
+                <img src="/logo.webp" alt="AEKO" className="w-5 h-5 object-contain" />
               </div>
               <span className="text-base font-semibold text-gray-900 dark:text-white tracking-tight">
                 AEKO<span className="text-violet-600 dark:text-violet-400">.AI</span>
@@ -781,7 +781,7 @@ const AgentLLMPage = () => {
                     {message.role === "assistant" && (
                       <div className="flex-shrink-0 mt-0.5">
                         <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500/20 to-violet-600/20 dark:from-violet-500/30 dark:to-violet-600/30 border border-violet-200/50 dark:border-violet-700/30 flex items-center justify-center">
-                          <img src="/logo.png" alt="AI" className="w-5 h-5 object-contain" />
+                          <img src="/logo.webp" alt="AI" className="w-5 h-5 object-contain" />
                         </div>
                       </div>
                     )}
@@ -852,7 +852,7 @@ const AgentLLMPage = () => {
                 {isLoading && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3 sm:gap-4">
                     <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500/20 to-violet-600/20 dark:from-violet-500/30 dark:to-violet-600/30 border border-violet-200/50 dark:border-violet-700/30 flex items-center justify-center shrink-0">
-                      <img src="/logo.png" alt="AI" className="w-5 h-5 object-contain" />
+                      <img src="/logo.webp" alt="AI" className="w-5 h-5 object-contain" />
                     </div>
                     <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-white/5 border border-gray-200/80 dark:border-white/10 shadow-sm">
                       <div className="flex gap-1.5">

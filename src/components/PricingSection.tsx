@@ -253,7 +253,7 @@ const PricingSection = () => {
         order_id: orderData.orderId,
         name: "AEKO.AI",
         description: `Purchase ${planName}`,
-        image: "/logo.png", // Optional: Add your logo
+        image: "/logo.webp", // Optional: Add your logo
         handler: async (response: any) => {
           try {
             console.log("Payment response:", response);

@@ -401,7 +401,7 @@ const PricingPage = () => {
         order_id: orderData.orderId,
         name: "AEKO.AI",
         description: `Purchase ${pkg.name}`,
-        image: "/logo.png",
+        image: "/logo.webp",
         handler: async (response: any) => {
           try {
             console.log("Payment response:", response);

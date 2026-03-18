@@ -104,7 +104,7 @@ const integrations: Integration[] = [
   {
     id: "figma",
     name: "Figma",
-    description: "Fetch design files and sync components with your agent.",
+    description: "Fetch design files and sync components with your MCP.",
     icon: Figma,
     category: "Design",
     status: "available",

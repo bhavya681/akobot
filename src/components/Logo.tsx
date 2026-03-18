@@ -31,12 +31,9 @@ const Logo = ({ size = "md", showText = false, className = "", href = "/" }: Log
           {/* Logo Container - Purely transparent */}
           <div className="relative w-full h-full flex items-center justify-center">
             <img
-              src="/logo.png"
+              src="/logo.webp"
               alt="AEKO"
               className="w-full h-full object-contain scale-150 drop-shadow-xl"
-              style={{
-                filter: 'drop-shadow(0 0 1px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.9))',
-              }}
             />
           </div>
         </div>

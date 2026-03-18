@@ -191,7 +191,7 @@ const VideoToolsPage = () => {
               whileTap={{ scale: 0.95 }}
             >
               <motion.img 
-                src="/logo.png" 
+                src="/logo.webp" 
                 alt="AKO.ai Logo" 
                 className="h-auto w-full max-w-[120px] object-contain"
                 animate={{

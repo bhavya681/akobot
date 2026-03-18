@@ -16,8 +16,19 @@ import {
   Users, 
   Briefcase, 
   Code2, 
-  Globe 
+  Globe,
+  Link2,
+  Eye,
+  Unplug,
+  Slack,
+  Github,
+  FileText,
+  Cloud,
+  Figma,
+  CreditCard,
 } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { FeedItem } from "@/components/feed/FeedCard";
 import MasonryCard from "@/components/feed/MasonryCard";
@@ -115,6 +126,7 @@ const generateMockItems = (startId: number, useImages: string[]): FeedItem[] => 
 const filters = [
   { id: "All", label: "All", icon: Sparkles },
   { id: "agents", label: "Agents", icon: Bot },
+  { id: "mcps", label: "MCPs", icon: Bot },
   { id: "images", label: "Images", icon: Image },
   { id: "videos", label: "Videos", icon: Video },
 ];
@@ -122,6 +134,60 @@ const filters = [
 const sortOptions = [
   { id: "top", label: "Top Day", icon: TrendingUp },
   { id: "likes", label: "Likes", icon: Heart },
+];
+
+interface MCP {
+  id: string;
+  name: string;
+  description: string;
+  icon: React.ElementType;
+  category: string;
+  status: "connected" | "available";
+  color?: string;
+  logoUrl?: string;
+}
+
+const mockMCPs: MCP[] = [
+  {
+    id: "slack",
+    name: "Slack",
+    description: "Team communication and workflow automation.",
+    icon: Slack,
+    category: "Communication",
+    status: "available",
+    color: "bg-[#4A154B]",
+    logoUrl: "https://cdn.simpleicons.org/slack/4A154B",
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    description: "Create issues, PRs, and manage repositories via MCP.",
+    icon: Github,
+    category: "Development",
+    status: "connected",
+    color: "bg-gray-900 dark:bg-gray-100",
+    logoUrl: "https://cdn.simpleicons.org/github/181717",
+  },
+  {
+    id: "google-drive",
+    name: "Google Drive",
+    description: "Search, upload, and organize files across your Drive.",
+    icon: Cloud,
+    category: "Storage",
+    status: "available",
+    color: "bg-[#4285F4]",
+    logoUrl: "https://cdn.simpleicons.org/googledrive/4285F4",
+  },
+  {
+    id: "figma",
+    name: "Figma",
+    description: "Fetch design files and sync components with your MCP.",
+    icon: Figma,
+    category: "Design",
+    status: "available",
+    color: "bg-[#F24E1E]",
+    logoUrl: "https://cdn.simpleicons.org/figma/F24E1E",
+  },
 ];
 
 interface Agent {
@@ -213,6 +279,7 @@ const FeedPage = () => {
   const [items, setItems] = useState<FeedItem[]>(() => generateMockItems(1, LOCAL_IMAGES));
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
+  const [logoErrors, setLogoErrors] = useState<Record<string, boolean>>({});
 
   const [reelsOpen, setReelsOpen] = useState(false);
   const [reelsIndex, setReelsIndex] = useState(0);
@@ -238,7 +305,8 @@ const FeedPage = () => {
     if (activeFilter === "All") return true;
     if (activeFilter === "images") return item.type === "image";
     if (activeFilter === "videos") return item.type === "video";
-    if (activeFilter === "agents") return false; // Agents filter shows agent sections, not feed items
+    if (activeFilter === "agents") return false;
+    if (activeFilter === "mcps") return false;
     return true;
   });
 
@@ -428,7 +496,7 @@ const FeedPage = () => {
         </div>
       </header>
 
-      {/* Explore Agents Section - Show only when All filter is active */}
+      {/* Explore MCP Section - Show only when All filter is active */}
       {activeFilter === "All" && (
         <div className="px-4 lg:px-6 py-8">
           <motion.section
@@ -439,6 +507,151 @@ const FeedPage = () => {
           >
             {/* Section Header */}
             <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <motion.div
+                  className="w-14 h-14 rounded-2xl bg-primary/20 border-2 border-primary/30 flex items-center justify-center shadow-lg"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
+                  <Bot className="w-7 h-7 text-primary" />
+                </motion.div>
+                <div>
+                  <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">Explore MCP</h2>
+                  <p className="text-xs text-muted-foreground">Discover and interact with powerful MCP integrations</p>
+                </div>
+              </div>
+              <motion.button
+                onClick={() => router.push("/dashboard/tool-usecase")}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                View All
+                <ArrowRight className="w-4 h-4" />
+              </motion.button>
+            </div>
+
+            {/* MCPs Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+              {mockMCPs.slice(0, 6).map((mcp, index) => {
+                const Icon = mcp.icon;
+                const isConnected = mcp.status === "connected";
+                const useLogo = Boolean(mcp.logoUrl) && !logoErrors[mcp.id];
+                return (
+                  <motion.div
+                    key={mcp.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.02 * Math.min(index, 12) }}
+                  >
+                    <Card
+                      className={cn(
+                        "h-full overflow-hidden rounded-2xl transition-all duration-200 group",
+                        "border border-border bg-card text-card-foreground",
+                        "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
+                      )}
+                    >
+                      <CardHeader className="pb-2 pt-5 px-5">
+                        <div className="flex items-start gap-4">
+                          <div
+                            className={cn(
+                              "flex items-center justify-center w-14 h-14 rounded-xl shrink-0 overflow-hidden",
+                              "ring-1 ring-border/80",
+                              useLogo
+                                ? "bg-white dark:bg-white"
+                                : "bg-muted/50 dark:bg-white/5",
+                              !useLogo && (mcp.color || "bg-primary")
+                            )}
+                          >
+                            {useLogo && mcp.logoUrl ? (
+                              <img
+                                src={mcp.logoUrl}
+                                alt=""
+                                className="w-8 h-8 object-contain"
+                                loading="lazy"
+                                onError={() =>
+                                  setLogoErrors((prev) => ({ ...prev, [mcp.id]: true }))
+                                }
+                              />
+                            ) : (
+                              <span className="flex items-center justify-center w-full h-full text-white">
+                                <Icon className="w-7 h-7" />
+                              </span>
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1 pt-0.5">
+                            <h3 className="text-base font-semibold text-foreground truncate">
+                              {mcp.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              {mcp.description}
+                            </p>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="px-5 pb-5 pt-0 flex items-center gap-2">
+                        {isConnected ? (
+                          <>
+                            <button
+                              className={cn(
+                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors border border-border bg-muted/40 dark:bg-white/5 text-foreground hover:bg-muted/60 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+                              )}
+                            >
+                              <Eye className="w-4 h-4 shrink-0" />
+                              <span className="whitespace-nowrap">Manage Access</span>
+                            </button>
+                            <button
+                              className={cn(
+                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
+                                "border border-destructive/40 text-destructive bg-destructive/5",
+                                "hover:bg-destructive/10 focus:outline-none focus:ring-2 focus:ring-destructive/20 focus:ring-offset-2 focus:ring-offset-background"
+                              )}
+                            >
+                              <Unplug className="w-4 h-4 shrink-0" />
+                              Disconnect
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className={cn(
+                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-all",
+                                "bg-primary text-primary-foreground shadow-sm",
+                                "hover:bg-primary/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background"
+                              )}
+                            >
+                              <Link2 className="w-4 h-4 shrink-0" />
+                              Connect
+                            </button>
+                            <button
+                              onClick={() => router.push("/dashboard/tool-usecase")}
+                              className={cn(
+                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
+                                "border border-border bg-muted/30 dark:bg-white/5 text-foreground",
+                                "hover:bg-muted/50 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+                              )}
+                            >
+                              View
+                              <ArrowRight className="w-4 h-4 shrink-0" />
+                            </button>
+                          </>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.section>
+
+      {/* Explore Agents Section */}
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            className="relative"
+          >
+            {/* Section Header */}
+            <div className="flex items-center justify-between mb-6 mt-6">
               <div className="flex items-center gap-4">
                 <motion.div
                   className="w-14 h-14 rounded-2xl bg-primary/20 border-2 border-primary/30 flex items-center justify-center shadow-lg"
@@ -807,6 +1020,155 @@ const FeedPage = () => {
             </motion.div>
           )}
         </motion.section>
+        </div>
+      )}
+
+      {/* MCPs Section - Show when mcps filter is active */}
+      {activeFilter === "mcps" && (
+        <div className="px-4 lg:px-6 py-8">
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+            className="relative"
+          >
+            {/* Section Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <motion.div
+                  className="w-14 h-14 rounded-2xl bg-primary/20 border-2 border-primary/30 flex items-center justify-center shadow-lg"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
+                  <Bot className="w-7 h-7 text-primary" />
+                </motion.div>
+                <div>
+                  <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">Explore MCP</h2>
+                  <p className="text-xs text-muted-foreground">Discover and interact with powerful MCP integrations</p>
+                </div>
+              </div>
+              <motion.button
+                onClick={() => router.push("/dashboard/tool-usecase")}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-all shadow-md shadow-primary/20"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                View All
+                <ArrowRight className="w-4 h-4" />
+              </motion.button>
+            </div>
+
+            {/* MCPs Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+              {mockMCPs.slice(0, 6).map((mcp, index) => {
+                const Icon = mcp.icon;
+                const isConnected = mcp.status === "connected";
+                const useLogo = Boolean(mcp.logoUrl) && !logoErrors[mcp.id];
+                return (
+                  <motion.div
+                    key={mcp.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.02 * Math.min(index, 12) }}
+                  >
+                    <Card
+                      className={cn(
+                        "h-full overflow-hidden rounded-2xl transition-all duration-200 group",
+                        "border border-border bg-card text-card-foreground",
+                        "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
+                      )}
+                    >
+                      <CardHeader className="pb-2 pt-5 px-5">
+                        <div className="flex items-start gap-4">
+                          <div
+                            className={cn(
+                              "flex items-center justify-center w-14 h-14 rounded-xl shrink-0 overflow-hidden",
+                              "ring-1 ring-border/80",
+                              useLogo
+                                ? "bg-white dark:bg-white"
+                                : "bg-muted/50 dark:bg-white/5",
+                              !useLogo && (mcp.color || "bg-primary")
+                            )}
+                          >
+                            {useLogo && mcp.logoUrl ? (
+                              <img
+                                src={mcp.logoUrl}
+                                alt=""
+                                className="w-8 h-8 object-contain"
+                                loading="lazy"
+                                onError={() =>
+                                  setLogoErrors((prev) => ({ ...prev, [mcp.id]: true }))
+                                }
+                              />
+                            ) : (
+                              <span className="flex items-center justify-center w-full h-full text-white">
+                                <Icon className="w-7 h-7" />
+                              </span>
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1 pt-0.5">
+                            <h3 className="text-base font-semibold text-foreground truncate">
+                              {mcp.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              {mcp.description}
+                            </p>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="px-5 pb-5 pt-0 flex items-center gap-2">
+                        {isConnected ? (
+                          <>
+                            <button
+                              className={cn(
+                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors border border-border bg-muted/40 dark:bg-white/5 text-foreground hover:bg-muted/60 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+                              )}
+                            >
+                              <Eye className="w-4 h-4 shrink-0" />
+                              <span className="whitespace-nowrap">Manage Access</span>
+                            </button>
+                            <button
+                              className={cn(
+                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
+                                "border border-destructive/40 text-destructive bg-destructive/5",
+                                "hover:bg-destructive/10 focus:outline-none focus:ring-2 focus:ring-destructive/20 focus:ring-offset-2 focus:ring-offset-background"
+                              )}
+                            >
+                              <Unplug className="w-4 h-4 shrink-0" />
+                              Disconnect
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className={cn(
+                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-all",
+                                "bg-primary text-primary-foreground shadow-sm",
+                                "hover:bg-primary/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background"
+                              )}
+                            >
+                              <Link2 className="w-4 h-4 shrink-0" />
+                              Connect
+                            </button>
+                            <button
+                              onClick={() => router.push("/dashboard/tool-usecase")}
+                              className={cn(
+                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
+                                "border border-border bg-muted/30 dark:bg-white/5 text-foreground",
+                                "hover:bg-muted/50 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+                              )}
+                            >
+                              View
+                              <ArrowRight className="w-4 h-4 shrink-0" />
+                            </button>
+                          </>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.section>
         </div>
       )}
 
