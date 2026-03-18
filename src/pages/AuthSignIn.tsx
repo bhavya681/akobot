@@ -26,14 +26,10 @@ const AuthSignIn = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   const showcaseImages = [
-    "/feeds/image1.jpg",
-    "/feeds/image3.png",
-    "/feeds/image8.jpg",
-    "/feeds/image14.jpg",
-    "/feeds/image15.jpg",
-    "/feeds/image16.jpg",
-    "/feeds/image17.jpg",
-    "/feeds/image18.jpg",
+    "/feeds/signin1.png",
+    "/feeds/signin2.png",
+    "/feeds/signin3.png",
+    "/feeds/signin4.png"
   ];
 
   useEffect(() => {
@@ -271,7 +267,7 @@ const AuthSignIn = () => {
             {showForgotPassword 
               ? "We'll send a link to your email." 
               : isSignUp 
-                ? "Join AEKO Creative Suite today" 
+                ? "Join AKO Creative Suite today" 
                 : "Sign in to continue to your dashboard"}
           </p>
         </motion.div>
@@ -543,7 +539,7 @@ const AuthSignIn = () => {
       >
         <motion.img 
           src={showcaseImages[currentImageIndex]} 
-          alt="AEKO Showcase"
+          alt="AKO Showcase"
           className="w-full h-full object-cover object-center"
           initial={{ scale: 1 }}
           animate={{ scale: 1.1 }}
@@ -627,16 +623,6 @@ const AuthSignIn = () => {
           With Intelligent AI Agents
         </span>
       </motion.h3>
-
-      <motion.p 
-        className="text-white/70 text-base lg:text-lg leading-relaxed"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6, duration: 0.5 }}
-      >
-        Transform your creative workflow with cutting-edge AI that generates stunning images, videos, and more.
-      </motion.p>
-
       {/* Feature Pills */}
       <motion.div 
         className="flex flex-wrap gap-3 mt-6"
@@ -644,7 +630,7 @@ const AuthSignIn = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7, duration: 0.5 }}
       >
-        {['Images', 'Videos', 'Agents', 'Automation'].map((feature) => (
+        {['Agents','Images', 'Videos', 'Automation'].map((feature) => (
           <span 
             key={feature}
             className="px-3 py-1.5 bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg text-white/80 text-xs font-medium"

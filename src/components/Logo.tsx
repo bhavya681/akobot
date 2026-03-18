@@ -33,8 +33,10 @@ const Logo = ({ size = "md", showText = false, className = "", href = "/" }: Log
             <img
               src="/logo.png"
               alt="AEKO"
-              // scale-150 makes the logo much bigger relative to the border
               className="w-full h-full object-contain scale-150 drop-shadow-xl"
+              style={{
+                filter: 'drop-shadow(0 0 1px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.9))',
+              }}
             />
           </div>
         </div>
