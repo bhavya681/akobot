@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Check, Sparkles, Shield, Zap, HeadphonesIcon, Loader2, CreditCard, IndianRupee, Coins, ArrowRightLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import { Check, Sparkles, Shield, Zap, HeadphonesIcon, Loader2, CreditCard, DollarSign, Coins, ArrowRightLeft, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import Navbar from "@/components/Navbar";
@@ -53,10 +53,9 @@ const enterpriseFeatures = [
 ];
 
 const CREDITS_PER_DOLLAR = 1_000_000;
-const INR_PER_USD = 83;
-const CUSTOM_MIN_AMOUNT = 100;   // ₹100
-const CUSTOM_MAX_AMOUNT = 10000; // ₹10,000
-const CUSTOM_PRESETS = [500, 1000, 2500, 5000, 10000];
+const CUSTOM_MIN_AMOUNT = 1;
+const CUSTOM_MAX_AMOUNT = 100;
+const CUSTOM_PRESETS = [5, 10, 25, 50, 100];
 
 /**
  * PricingPage Component
@@ -81,7 +80,7 @@ const PricingPage = () => {
   const [gatewayDialogOpen, setGatewayDialogOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
 
-  const [customAmount, setCustomAmount] = useState(500); // INR
+  const [customAmount, setCustomAmount] = useState(5);
   const [customGateways, setCustomGateways] = useState<PaymentGateway[]>([]);
   const [selectedCustomGateway, setSelectedCustomGateway] = useState("");
   const [customGatewaysLoading, setCustomGatewaysLoading] = useState(false);
@@ -308,13 +307,12 @@ const PricingPage = () => {
       return;
     }
     if (customAmount < CUSTOM_MIN_AMOUNT || customAmount > CUSTOM_MAX_AMOUNT) {
-      toast.error(`Amount must be between ₹${CUSTOM_MIN_AMOUNT.toLocaleString("en-IN")} and ₹${CUSTOM_MAX_AMOUNT.toLocaleString("en-IN")}`);
+      toast.error(`Amount must be between $${CUSTOM_MIN_AMOUNT} and $${CUSTOM_MAX_AMOUNT}`);
       return;
     }
-    const amountUsd = Math.max(1, Math.round(customAmount / INR_PER_USD));
     setCustomProcessing(true);
     try {
-      const data = await paymentAPI.createCustomOrder(amountUsd, selectedCustomGateway || undefined) as Record<string, unknown>;
+      const data = await paymentAPI.createCustomOrder(customAmount, selectedCustomGateway || undefined) as Record<string, unknown>;
       if (selectedCustomGateway === "razorpay") {
         openCustomRazorpay(data as { keyId: string; amount: number; currency: string; orderId: string; amountInUsd: number; credits?: number });
       } else {
@@ -568,20 +566,20 @@ const PricingPage = () => {
               transition={{ duration: 0.4 }}
               className="text-center mb-8"
             >
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground dark:text-white mb-2 tracking-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight drop-shadow-[0_0_22px_rgba(244,114,182,0.35)]">
                 Plans & Pricing
               </h1>
-              <p className="text-muted-foreground text-sm sm:text-base mb-5 max-w-md mx-auto">
+              <p className="text-violet-100/80 text-sm sm:text-base mb-5 max-w-md mx-auto">
                 Choose the right plan for your team. Upgrade or downgrade anytime.
               </p>
-              <div className="inline-flex items-center rounded-full bg-muted/80 dark:bg-white/10 backdrop-blur-sm border border-border dark:border-violet-400/20 p-0.5 mb-4">
+              <div className="inline-flex items-center rounded-full bg-white/5 backdrop-blur-md border border-violet-300/25 p-0.5 mb-4">
                 <button
                   type="button"
                   onClick={() => setBillingPeriod("monthly")}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     billingPeriod === "monthly"
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
-                      : "text-muted-foreground dark:text-violet-200/80 hover:text-foreground dark:hover:text-white"
+                      ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30"
+                      : "text-violet-100/70 hover:text-white"
                   }`}
                 >
                   Monthly
@@ -591,8 +589,8 @@ const PricingPage = () => {
                   onClick={() => setBillingPeriod("yearly")}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     billingPeriod === "yearly"
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
-                      : "text-muted-foreground dark:text-violet-200/80 hover:text-foreground dark:hover:text-white"
+                      ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-fuchsia-500/30"
+                      : "text-violet-100/70 hover:text-white"
                   }`}
                 >
                   Yearly
@@ -627,7 +625,7 @@ const PricingPage = () => {
                     variant="outline"
                     onClick={() => {
                       setCustomPaymentSuccess(null);
-                      setCustomAmount(500);
+                      setCustomAmount(5);
                     }}
                     className="w-full"
                   >
@@ -638,26 +636,41 @@ const PricingPage = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="max-w-3xl mx-auto rounded-2xl p-6 sm:p-8 bg-card dark:bg-black border border-border dark:border-violet-400/20 shadow-xl"
+                  whileHover={{ y: -2 }}
+                  transition={{ duration: 0.25 }}
+                  className="relative max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 bg-gradient-to-br from-[#17112a]/95 via-[#120d22]/95 to-[#0e0a18]/95 border border-violet-300/25 shadow-[0_16px_55px_rgba(124,58,237,0.22)] overflow-hidden"
                 >
+                  <div className="pointer-events-none absolute -top-20 -right-24 h-52 w-52 rounded-full bg-fuchsia-500/20 blur-3xl" />
+                  <div className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-violet-500/20 blur-3xl" />
+
                   <div className="flex items-start sm:items-center justify-between gap-4 mb-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl bg-violet-500/20 border border-violet-400/30 flex items-center justify-center">
-                        <Coins className="w-6 h-6 text-violet-400" />
+                      <div className="relative w-11 h-11 rounded-xl bg-violet-500/20 border border-violet-300/40 flex items-center justify-center">
+                        <Coins className="w-6 h-6 text-violet-300" />
+                        <span className="absolute -top-1.5 -right-1.5 h-2.5 w-2.5 rounded-full bg-fuchsia-400 animate-ping" />
                       </div>
                       <div>
-                        <h2 className="text-xl font-bold text-foreground dark:text-white">Custom Top-Up</h2>
-                        <p className="text-sm text-muted-foreground">Choose any amount and pay in ₹ (INR)</p>
+                        <h2 className="text-xl font-bold text-white">Custom Top-Up</h2>
+                        <p className="text-sm text-violet-100/80">Choose any amount and pay in $ (USD)</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl sm:text-3xl font-extrabold text-foreground dark:text-white tabular-nums">
-                        ₹{customAmount.toLocaleString("en-IN")}
+                      <motion.div
+                        key={customAmount}
+                        initial={{ scale: 0.96, opacity: 0.8 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.2 }}
+                        className="inline-flex items-center rounded-2xl border border-fuchsia-300/35 bg-gradient-to-r from-violet-500/20 to-fuchsia-500/20 px-3 py-1.5 text-2xl sm:text-3xl font-extrabold text-white tabular-nums shadow-lg shadow-fuchsia-500/15"
+                      >
+                        ${customAmount}
+                      </motion.div>
+                      <div className="mt-1 text-xs sm:text-sm text-violet-100/80">
+                        One-time top-up
                       </div>
-                      <div className="text-xs sm:text-sm text-muted-foreground">
+                      <div className="text-xs sm:text-sm text-violet-100/70">
                         ≈{" "}
-                        <span className="font-semibold text-foreground dark:text-violet-200">
-                          {Math.round((customAmount / INR_PER_USD) * CREDITS_PER_DOLLAR).toLocaleString("en-IN")}
+                        <span className="font-semibold text-white">
+                          {(customAmount * CREDITS_PER_DOLLAR).toLocaleString("en-US")}
                         </span>{" "}
                         credits
                       </div>
@@ -671,21 +684,24 @@ const PricingPage = () => {
                           className="absolute -translate-x-1/2 -top-6 select-none rounded-full bg-rose-500 px-2.5 py-1 text-[11px] font-semibold text-white shadow-md after:absolute after:left-1/2 after:top-full after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-rose-500"
                           style={{ left: `${((customAmount - CUSTOM_MIN_AMOUNT) / (CUSTOM_MAX_AMOUNT - CUSTOM_MIN_AMOUNT)) * 100}%` }}
                         >
-                          {Math.round((customAmount / INR_PER_USD) * CREDITS_PER_DOLLAR).toLocaleString("en-IN")} credits
+                          {(customAmount * CREDITS_PER_DOLLAR).toLocaleString("en-US")} credits
                         </div>
                       </div>
                       <Slider
                         min={CUSTOM_MIN_AMOUNT}
                         max={CUSTOM_MAX_AMOUNT}
-                        step={100}
+                        step={1}
                         value={[customAmount]}
                         onValueChange={([v]) => setCustomAmount(v)}
                         className="w-full"
+                        trackClassName="bg-white/10"
+                        rangeClassName="bg-gradient-to-r from-fuchsia-500 via-pink-500 to-violet-500"
+                        thumbClassName="h-5 w-5 border-0 bg-white shadow-[0_0_0_5px_rgba(217,70,239,0.3)]"
                       />
                     </div>
-                    <div className="flex justify-between mt-3 text-xs text-muted-foreground">
-                      <span>₹{CUSTOM_MIN_AMOUNT.toLocaleString("en-IN")}</span>
-                      <span>₹{CUSTOM_MAX_AMOUNT.toLocaleString("en-IN")}</span>
+                    <div className="flex justify-between mt-3 text-xs text-violet-100/70">
+                      <span>${CUSTOM_MIN_AMOUNT}</span>
+                      <span>${CUSTOM_MAX_AMOUNT}</span>
                     </div>
                   </div>
 
@@ -695,13 +711,13 @@ const PricingPage = () => {
                         key={p}
                         type="button"
                         onClick={() => setCustomAmount(p)}
-                        className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${
+                        className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all hover:-translate-y-0.5 ${
                           customAmount === p
-                            ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/30"
-                            : "bg-muted/60 dark:bg-white/5 text-muted-foreground dark:text-violet-200/80 border-border dark:border-violet-400/20 hover:bg-muted dark:hover:bg-white/10"
+                            ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white border-transparent shadow-lg shadow-fuchsia-500/25"
+                            : "bg-white/5 text-violet-100/85 border-violet-300/25 hover:bg-white/10"
                         }`}
                       >
-                        ₹{p >= 1000 ? (p % 1000 === 0 ? p / 1000 + "K" : (p / 1000).toFixed(1) + "K") : p}
+                        ${p}
                       </button>
                     ))}
                   </div>
@@ -733,26 +749,26 @@ const PricingPage = () => {
                       </div>
                     )}
 
-                    <div className="p-4 rounded-xl bg-muted/50 dark:bg-white/5 border border-border dark:border-violet-400/10 space-y-2">
+                    <div className="p-4 rounded-xl bg-white/5 border border-violet-300/20 backdrop-blur-sm space-y-2">
                       <div className="flex justify-between items-center text-sm">
-                        <span className="text-muted-foreground flex items-center gap-1.5">
-                          <IndianRupee className="w-4 h-4" /> Amount
+                        <span className="text-violet-100/75 flex items-center gap-1.5">
+                          <DollarSign className="w-4 h-4" /> Amount
                         </span>
-                        <span className="font-semibold text-foreground dark:text-white">₹{customAmount.toLocaleString("en-IN")}</span>
+                        <span className="font-semibold text-white">${customAmount}.00</span>
                       </div>
                       <div className="flex justify-between items-center text-sm">
-                        <span className="text-muted-foreground flex items-center gap-1.5">
+                        <span className="text-violet-100/75 flex items-center gap-1.5">
                           <Coins className="w-4 h-4" /> Credits (est.)
                         </span>
-                        <span className="font-semibold text-foreground dark:text-white">
-                          {Math.round((customAmount / INR_PER_USD) * CREDITS_PER_DOLLAR).toLocaleString("en-IN")}
+                        <span className="font-semibold text-white">
+                          {(customAmount * CREDITS_PER_DOLLAR).toLocaleString("en-US")}
                         </span>
                       </div>
                       <div className="flex justify-between items-center text-sm">
-                        <span className="text-muted-foreground flex items-center gap-1.5">
+                        <span className="text-violet-100/75 flex items-center gap-1.5">
                           <ArrowRightLeft className="w-4 h-4" /> Gateway
                         </span>
-                        <span className="font-medium text-foreground dark:text-white capitalize">
+                        <span className="font-medium text-white capitalize">
                           {customGateways.find((g) => g.name === selectedCustomGateway)?.displayName || selectedCustomGateway}
                         </span>
                       </div>
@@ -770,7 +786,7 @@ const PricingPage = () => {
                     <Button
                       onClick={handleCustomPay}
                       disabled={customProcessing || customGateways.length === 0 || !selectedCustomGateway || customGatewaysLoading}
-                      className="w-full h-12 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-violet-600 text-white font-semibold hover:opacity-95 shadow-lg shadow-violet-500/25 text-base disabled:opacity-50"
+                      className="w-full h-12 rounded-full bg-gradient-to-r from-fuchsia-500 via-pink-500 to-violet-600 text-white font-semibold hover:opacity-95 shadow-lg shadow-fuchsia-500/35 text-base disabled:opacity-50"
                     >
                       {customProcessing ? (
                         <>
@@ -780,14 +796,14 @@ const PricingPage = () => {
                       ) : (
                         <>
                           <CreditCard className="w-5 h-5 mr-2" />
-                          Buy Now — ₹{customAmount.toLocaleString("en-IN")}
+                          Buy Now — ${customAmount}.00
                         </>
                       )}
                     </Button>
                     <p className="mt-4 text-xs text-center text-muted-foreground">
                       {selectedCustomGateway === "razorpay"
-                        ? "You will be charged in INR. Secured by Razorpay."
-                        : "Amount will be converted to USD at current rate. Secured by Stripe."}
+                        ? "You will be charged in INR at current exchange rate. Secured by Razorpay."
+                        : "You will be charged in USD. Secured by Stripe."}
                     </p>
                   </div>
                 </motion.div>
@@ -795,31 +811,34 @@ const PricingPage = () => {
             </div>
 
             {/* List packages: Free + each package (Buy → Razorpay) + Enterprise */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 items-stretch">
+            <div className="relative rounded-3xl border border-violet-400/25 bg-gradient-to-br from-[#0f0b1c]/95 via-[#120d22]/95 to-[#1a1030]/95 p-4 sm:p-6 shadow-[0_0_60px_rgba(168,85,247,0.2)] overflow-hidden">
+              <div className="pointer-events-none absolute -top-24 -left-24 h-56 w-56 rounded-full bg-fuchsia-500/20 blur-3xl" />
+              <div className="pointer-events-none absolute -bottom-24 -right-24 h-56 w-56 rounded-full bg-violet-500/20 blur-3xl" />
+              <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-5 sm:gap-6 items-stretch">
               {/* Left: Free Plan */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.05 }}
                 whileHover={{ scale: 1.02 }}
-                className="relative rounded-2xl p-5 sm:p-6 flex flex-col bg-card dark:bg-black border border-border dark:border-violet-400/15 hover:border-primary/30 dark:hover:border-violet-400/25 hover:shadow-xl hover:shadow-primary/10 dark:hover:shadow-violet-500/10 transition-all"
+                className="relative rounded-3xl p-5 sm:p-6 flex flex-col bg-gradient-to-b from-[#161224]/95 to-[#0d0b16]/95 text-white border border-white/10 hover:border-violet-400/40 hover:shadow-[0_0_35px_rgba(139,92,246,0.22)] transition-all"
               >
-                <h2 className="text-lg font-bold text-foreground dark:text-white mb-1">Free</h2>
+                <h2 className="text-lg font-bold text-white mb-1">Free</h2>
                 <div className="flex items-baseline gap-1 mb-4">
-                  <span className="text-2xl font-bold text-foreground dark:text-white">₹0</span>
-                  <span className="text-sm text-muted-foreground">/ month</span>
+                  <span className="text-4xl font-extrabold text-white tracking-tight">$0</span>
+                  <span className="text-base text-violet-100/80 font-medium">USD /mo</span>
                 </div>
                 <Button
                   onClick={() => router.push("/auth/sign-in")}
                   variant="secondary"
-                  className="w-full rounded-xl h-10 bg-primary/10 dark:bg-violet-500/20 hover:bg-primary/20 dark:hover:bg-violet-500/30 text-foreground dark:text-violet-100 border border-border dark:border-violet-400/25 mb-4 text-sm font-medium"
+                  className="w-full rounded-full h-11 bg-white/10 hover:bg-white/15 text-white border border-white/15 mb-4 text-sm font-semibold"
                 >
                   Try Now
                 </Button>
                 <ul className="space-y-2 flex-1 min-h-0 overflow-y-auto pr-1">
                   {freeFeatures.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground dark:text-violet-100/90">
-                      <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-violet-100/90">
+                      <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                       <span>{f}</span>
                     </li>
                   ))}
@@ -831,19 +850,19 @@ const PricingPage = () => {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="rounded-2xl p-6 flex flex-col items-center justify-center bg-card dark:bg-black border border-border dark:border-violet-400/15 min-h-[280px]"
+                  className="rounded-3xl p-6 flex flex-col items-center justify-center bg-gradient-to-b from-[#161224]/95 to-[#0d0b16]/95 border border-white/10 min-h-[280px]"
                 >
                   <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
-                  <p className="text-muted-foreground text-sm">Loading packages...</p>
+                  <p className="text-violet-100/80 text-sm">Loading packages...</p>
                 </motion.div>
               ) : packages.length === 0 ? (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="rounded-2xl p-6 flex flex-col items-center justify-center bg-card dark:bg-black border border-border dark:border-violet-400/15 min-h-[200px] col-span-1 sm:col-span-2"
+                  className="rounded-3xl p-6 flex flex-col items-center justify-center bg-gradient-to-b from-[#161224]/95 to-[#0d0b16]/95 border border-white/10 min-h-[200px] col-span-1 sm:col-span-2"
                 >
-                  <p className="text-muted-foreground text-sm mb-1">No packages available</p>
-                  <p className="text-muted-foreground/70 text-xs">Check back later or contact support</p>
+                  <p className="text-violet-100/90 text-sm mb-1">No packages available</p>
+                  <p className="text-violet-100/60 text-xs">Check back later or contact support</p>
                 </motion.div>
               ) : (
                 packages.map((pkg, index) => (
@@ -853,38 +872,43 @@ const PricingPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.35, delay: 0.05 + index * 0.05 }}
                     whileHover={{ scale: 1.02 }}
-                    className="relative rounded-2xl p-5 sm:p-6 flex flex-col bg-card dark:bg-black border-2 border-primary/20 dark:border-violet-400/30 hover:border-primary/40 dark:hover:border-violet-400/50 shadow-lg shadow-primary/10 dark:shadow-violet-500/10 transition-all"
+                    className={`relative rounded-3xl p-5 sm:p-6 flex flex-col text-white transition-all ${
+                      index === 0
+                        ? "bg-gradient-to-b from-[#1a1230]/95 to-[#100a1f]/95 border border-fuchsia-300/65 shadow-[0_0_45px_rgba(236,72,153,0.28)]"
+                        : "bg-gradient-to-b from-[#161224]/95 to-[#0d0b16]/95 border border-white/15 hover:border-violet-300/45 hover:shadow-[0_0_32px_rgba(168,85,247,0.2)]"
+                    }`}
                   >
                     {pkg.offer && (
                       <div className="absolute -top-2.5 left-1/2 -translate-x-1/2">
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-full shadow-md">
                           <Sparkles className="w-3 h-3" />
                           {pkg.offer}
                         </span>
                       </div>
                     )}
-                    <h2 className="text-lg font-bold text-foreground dark:text-white mb-1">{pkg.name}</h2>
+                    <h2 className="text-lg font-bold text-white mb-1">{pkg.name}</h2>
                     <div className="flex items-baseline gap-2 flex-wrap mb-2">
                       {pkg.actualPrice != null && pkg.actualPrice > pkg.currentPrice && (
-                        <span className="text-base font-medium text-muted-foreground line-through">
-                          ₹{pkg.actualPrice.toLocaleString("en-IN")}
+                        <span className="text-base font-medium text-violet-100/45 line-through">
+                          ${pkg.actualPrice.toLocaleString("en-US")}
                         </span>
                       )}
-                      <span className="text-2xl font-bold text-foreground dark:text-white">
-                        ₹{pkg.currentPrice.toLocaleString("en-IN")}
+                      <span className="text-5xl leading-none font-extrabold text-white tracking-tight">
+                        ${pkg.currentPrice.toLocaleString("en-US")}
                       </span>
-                      <span className="text-sm text-muted-foreground">one-time</span>
+                      <span className="text-lg text-violet-100/90 font-semibold">USD /mo</span>
                     </div>
+                    <p className="text-xs text-violet-100/60 mb-2">{billingPeriod === "yearly" ? "Billed annually" : "Billed monthly"}</p>
                     {pkg.description && (
-                      <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{pkg.description}</p>
+                      <p className="text-xs text-violet-100/75 mb-3 line-clamp-2">{pkg.description}</p>
                     )}
-                    <p className="text-xs text-muted-foreground mb-4">
-                      <span className="font-semibold">{pkg.includedCredits.toLocaleString("en-IN")}</span> credits
+                    <p className="text-xs text-violet-100/85 mb-4">
+                      <span className="font-semibold">{pkg.includedCredits.toLocaleString("en-IN")}</span> credits/month
                     </p>
                     <Button
                       onClick={() => handleBuyPackage(pkg)}
                       disabled={processing === pkg._id || !razorpayLoaded}
-                      className="w-full rounded-xl h-10 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-violet-600 text-white font-semibold hover:opacity-95 shadow-lg shadow-violet-500/25 text-sm disabled:opacity-50 mt-auto"
+                      className="w-full rounded-full h-11 bg-gradient-to-r from-fuchsia-500 via-pink-500 to-rose-500 text-white font-semibold hover:opacity-95 shadow-lg shadow-fuchsia-500/25 text-sm disabled:opacity-50 mt-auto"
                     >
                       {processing === pkg._id ? (
                         <>
@@ -910,23 +934,23 @@ const PricingPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.1 }}
                 whileHover={{ scale: 1.02 }}
-                className="relative rounded-2xl p-5 sm:p-6 flex flex-col bg-card dark:bg-black border border-dashed border-primary/30 dark:border-violet-400/25 hover:border-primary/50 dark:hover:border-violet-400/40 hover:shadow-xl hover:shadow-primary/10 dark:hover:shadow-violet-500/10 transition-all"
+                className="relative rounded-3xl p-5 sm:p-6 flex flex-col bg-gradient-to-b from-[#161224]/95 to-[#0d0b16]/95 text-white border border-dashed border-violet-300/40 hover:border-violet-300/70 hover:shadow-[0_0_30px_rgba(139,92,246,0.18)] transition-all"
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <Coins className="w-5 h-5 text-primary dark:text-violet-400" />
-                  <h2 className="text-lg font-bold text-foreground dark:text-white">Custom Top-Up</h2>
+                  <Coins className="w-5 h-5 text-violet-300" />
+                  <h2 className="text-lg font-bold text-white">Custom Top-Up</h2>
                 </div>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-2xl font-bold text-foreground dark:text-white">₹100</span>
-                  <span className="text-sm text-muted-foreground">– ₹10,000</span>
+                  <span className="text-2xl font-bold text-white">$1</span>
+                  <span className="text-sm text-violet-100/75">– $100</span>
                 </div>
-                <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
-                  Pick any amount in ₹ (INR). Pay via Razorpay or Stripe.
+                <p className="text-xs text-violet-100/75 mb-3 line-clamp-2">
+                  Pick any amount in USD. Pay via Stripe or Razorpay.
                 </p>
-                <p className="text-xs text-muted-foreground mb-4">
-                  <span className="font-semibold">~12,000</span> credits per ₹1
+                <p className="text-xs text-violet-100/85 mb-4">
+                  <span className="font-semibold">1,000,000</span> credits per $1
                 </p>
-                <p className="text-xs text-muted-foreground mt-auto">
+                <p className="text-xs text-violet-100/70 mt-auto">
                   Set your amount in the section above ↑
                 </p>
               </motion.div>
@@ -937,28 +961,29 @@ const PricingPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, delay: 0.15 }}
                 whileHover={{ scale: 1.02 }}
-                className="relative rounded-2xl p-5 sm:p-6 flex flex-col bg-card dark:bg-black border border-border dark:border-violet-400/15 hover:border-primary/30 dark:hover:border-violet-400/25 hover:shadow-xl hover:shadow-primary/10 dark:hover:shadow-violet-500/10 transition-all"
+                className="relative rounded-3xl p-5 sm:p-6 flex flex-col bg-gradient-to-b from-[#161224]/95 to-[#0d0b16]/95 text-white border border-white/15 hover:border-violet-300/45 hover:shadow-[0_0_32px_rgba(168,85,247,0.2)] transition-all"
               >
-                <h2 className="text-lg font-bold text-foreground dark:text-white mb-1">Enterprise</h2>
+                <h2 className="text-lg font-bold text-white mb-1">Enterprise</h2>
                 <div className="flex items-baseline gap-1 mb-4">
-                  <span className="text-2xl font-bold text-foreground dark:text-white">Custom</span>
+                  <span className="text-2xl font-bold text-white">Custom</span>
                 </div>
                 <Button
                   onClick={() => router.push("/auth/sign-in")}
                   variant="outline"
-                  className="w-full rounded-xl h-10 bg-primary/10 dark:bg-violet-500/15 hover:bg-primary/20 dark:hover:bg-violet-500/25 text-foreground dark:text-violet-100 border border-border dark:border-violet-400/25 mb-4 text-sm font-medium"
+                  className="w-full rounded-full h-11 bg-white/10 hover:bg-white/15 text-white border border-white/15 mb-4 text-sm font-semibold"
                 >
                   Contact Sales
                 </Button>
                 <ul className="space-y-2 flex-1 min-h-0 overflow-y-auto pr-1">
                   {enterpriseFeatures.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground dark:text-violet-100/90">
-                      <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <li key={f} className="flex items-start gap-2 text-xs sm:text-sm text-violet-100/90">
+                      <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                       <span>{f}</span>
                     </li>
                   ))}
                 </ul>
               </motion.div>
+              </div>
             </div>
           </div>
         </section>
