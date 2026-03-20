@@ -25,6 +25,7 @@ import {
   Headset,
   Search,
   Database,
+  BarChart3,
   FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -419,119 +420,102 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* Right column: four equal dashboards (Support, SEO, Data, MoM) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* Right column: Enhanced dashboard cards */}
+        <div className="grid grid-cols-2 gap-4">
           {/* Support Agent Dashboard */}
-          <div className={`${summaryCardBase} relative overflow-hidden`}>
-            <div className="pointer-events-none absolute inset-0 rounded-2xl border border-emerald-400/40 animate-pulse" />
-            <div className="pointer-events-none absolute -top-8 -right-8 h-20 w-20 rounded-full bg-emerald-500/20 dark:bg-emerald-500/25 blur-2xl" />
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground/90">
-                  Support Agent Dashboard
-                </span>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Ticket load and SLA health
-                </p>
+          <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-emerald-50/80 to-white dark:from-emerald-950/30 dark:to-card border border-border/50 hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 hover:shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                <Headset className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/60 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-500">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 Live
               </span>
             </div>
-            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-              Ticket load, SLAs, and response quality in one place.
-            </p>
-            <div className="mt-3 flex items-center justify-between text-[11px]">
-              <span className="text-muted-foreground">SLA Performance</span>
-              <span className="font-semibold text-emerald-600 dark:text-emerald-400">94.2%</span>
+            <h3 className="text-sm font-semibold text-foreground mb-1">Support Agent</h3>
+            <p className="text-xs text-muted-foreground mb-4">Ticket management & SLA tracking</p>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Open Tickets</span>
+                <span className="text-sm font-semibold text-foreground">12</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">SLA Compliance</span>
+                <span className="text-sm font-semibold text-emerald-600">94.2%</span>
+              </div>
             </div>
           </div>
 
           {/* SEO Engine Dashboard */}
-          <div className={`${summaryCardBase} relative overflow-hidden`}>
-            <div
-              className="pointer-events-none absolute inset-0 rounded-2xl border border-sky-400/40 animate-pulse"
-              style={{ animationDelay: "180ms" }}
-            />
-            <div className="pointer-events-none absolute -top-8 -right-8 h-20 w-20 rounded-full bg-sky-500/20 dark:bg-sky-500/25 blur-2xl" />
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground/90">
-                  SEO Engine Dashboard
-                </span>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Ranking and keyword movement
-                </p>
+          <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-sky-50/80 to-white dark:from-sky-950/30 dark:to-card border border-border/50 hover:border-sky-200 dark:hover:border-sky-800 transition-all duration-300 hover:shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/50 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-sky-600 dark:text-sky-400" />
               </div>
-              <span className="inline-flex items-center gap-1 rounded-full border border-sky-400/60 bg-sky-500/10 px-2 py-0.5 text-[10px] text-sky-500">
+              <span className="text-xs font-medium text-sky-600 dark:text-sky-400">
                 Optimizing
               </span>
             </div>
-            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-              Monitor rankings, content gaps, and keyword coverage.
-            </p>
-            <div className="mt-3 flex items-center justify-between text-[11px]">
-              <span className="text-muted-foreground">Keyword Growth</span>
-              <span className="font-semibold text-sky-600 dark:text-sky-400">+18</span>
+            <h3 className="text-sm font-semibold text-foreground mb-1">SEO Engine</h3>
+            <p className="text-xs text-muted-foreground mb-4">Rankings & keyword tracking</p>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Keywords</span>
+                <span className="text-sm font-semibold text-foreground">1,247</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Growth</span>
+                <span className="text-sm font-semibold text-sky-600">+18%</span>
+              </div>
             </div>
           </div>
 
           {/* Data Analysis Dashboard */}
-          <div className={`${summaryCardBase} relative overflow-hidden`}>
-            <div
-              className="pointer-events-none absolute inset-0 rounded-2xl border border-amber-400/40 animate-pulse"
-              style={{ animationDelay: "320ms" }}
-            />
-            <div className="pointer-events-none absolute -top-8 -right-8 h-20 w-20 rounded-full bg-amber-500/20 dark:bg-amber-500/25 blur-2xl" />
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground/90">
-                  Data Analysis Dashboard
-                </span>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Insights and report tracking
-                </p>
+          <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-amber-50/80 to-white dark:from-amber-950/30 dark:to-card border border-border/50 hover:border-amber-200 dark:hover:border-amber-800 transition-all duration-300 hover:shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+                <Database className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               </div>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-amber-400/70 bg-amber-500/10 text-amber-500">
-                <Database className="w-3.5 h-3.5" />
+              <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
+                Active
               </span>
             </div>
-            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-              Track reports, insights, and scheduled analytics.
-            </p>
-            <div className="mt-3 flex items-center justify-between text-[11px]">
-              <span className="text-muted-foreground">Reports Generated</span>
-              <span className="font-semibold text-amber-600 dark:text-amber-400">12</span>
+            <h3 className="text-sm font-semibold text-foreground mb-1">Data Analysis</h3>
+            <p className="text-xs text-muted-foreground mb-4">Insights & report generation</p>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Reports</span>
+                <span className="text-sm font-semibold text-foreground">12</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Last Run</span>
+                <span className="text-sm font-semibold text-foreground">2h ago</span>
+              </div>
             </div>
           </div>
 
           {/* MoM Master Dashboard */}
-          <div className={`${summaryCardBase} relative overflow-hidden`}>
-            <div
-              className="pointer-events-none absolute inset-0 rounded-2xl border border-violet-400/40 animate-pulse"
-              style={{ animationDelay: "460ms" }}
-            />
-            <div className="pointer-events-none absolute -top-8 -right-8 h-20 w-20 rounded-full bg-violet-500/20 dark:bg-violet-500/25 blur-2xl" />
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground/90">
-                  MoM Master Dashboard
-                </span>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Meeting notes and follow-ups
-                </p>
+          <div className="group relative p-5 rounded-2xl bg-gradient-to-br from-violet-50/80 to-white dark:from-violet-950/30 dark:to-card border border-border/50 hover:border-violet-200 dark:hover:border-violet-800 transition-all duration-300 hover:shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-violet-600 dark:text-violet-400" />
               </div>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-primary/60 bg-primary/10 text-primary">
-                <FileText className="w-3.5 h-3.5" />
+              <span className="text-xs font-medium text-violet-600 dark:text-violet-400">
+                Updated
               </span>
             </div>
-            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-              Central hub for minutes of meetings and follow-ups.
-            </p>
-            <div className="mt-3 flex items-center justify-between text-[11px]">
-              <span className="text-muted-foreground">Meetings Processed</span>
-              <span className="font-semibold text-violet-600 dark:text-violet-400">9</span>
+            <h3 className="text-sm font-semibold text-foreground mb-1">MoM Master</h3>
+            <p className="text-xs text-muted-foreground mb-4">Meeting notes & follow-ups</p>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Meetings</span>
+                <span className="text-sm font-semibold text-foreground">9</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Pending</span>
+                <span className="text-sm font-semibold text-violet-600">3</span>
+              </div>
             </div>
           </div>
         </div>

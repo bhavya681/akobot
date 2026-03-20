@@ -195,6 +195,26 @@ const mockMCPs: MCP[] = [
     color: "bg-[#F24E1E]",
     logoUrl: "https://cdn.simpleicons.org/figma/F24E1E",
   },
+  {
+    id: "notion",
+    name: "Notion",
+    description: "Manage pages, databases, and wikis in Notion.",
+    icon: FileText,
+    category: "Productivity",
+    status: "available",
+    color: "bg-[#000000]",
+    logoUrl: "https://cdn.simpleicons.org/notion/000000",
+  },
+  {
+    id: "stripe",
+    name: "Stripe",
+    description: "Process payments and manage subscriptions easily.",
+    icon: CreditCard,
+    category: "Finance",
+    status: "available",
+    color: "bg-[#635BFF]",
+    logoUrl: "https://cdn.simpleicons.org/stripe/635BFF",
+  },
 ];
 
 interface Agent {
@@ -264,7 +284,7 @@ const mockAgents: Agent[] = [
     createdAt: new Date(),
     interactions: 980,
     category: "Analytics",
-    logoUrl: "https://cdn.simpleicons.org/tableau/E97627",
+    logoUrl: "https://cdn.simpleicons.org/metabase/509CC9",
   },
   {
     id: "6",
@@ -544,8 +564,8 @@ const FeedPage = () => {
               </motion.button>
             </div>
 
-            {/* MCPs Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+            {/* MCPs Grid - Matching ToolUsecasePage style */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
               {mockMCPs.slice(0, 6).map((mcp, index) => {
                 const Icon = mcp.icon;
                 const isConnected = mcp.status === "connected";
@@ -559,20 +579,20 @@ const FeedPage = () => {
                   >
                     <Card
                       className={cn(
-                        "h-full overflow-hidden rounded-2xl transition-all duration-200 group",
-                        "border border-border bg-card text-card-foreground",
-                        "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
+                        "overflow-hidden rounded-xl transition-all duration-200 group flex flex-col",
+                        "border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111722] text-slate-900 dark:text-white",
+                        "shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.45)] hover:-translate-y-0.5 hover:border-indigo-300 dark:hover:border-indigo-400/45 hover:shadow-[0_10px_24px_rgba(79,70,229,0.14)] dark:hover:shadow-[0_14px_30px_rgba(37,99,235,0.22)]"
                       )}
                     >
                       <CardHeader className="pb-2 pt-4 px-4">
-                        <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3">
                           <div
                             className={cn(
-                              "flex items-center justify-center w-12 h-12 rounded-xl shrink-0 overflow-hidden",
-                              "ring-1 ring-border/80",
+                              "flex items-center justify-center w-11 h-11 rounded-lg shrink-0 overflow-hidden",
+                              "ring-1 ring-slate-200 dark:ring-white/15",
                               useLogo
-                                ? "bg-white dark:bg-white"
-                                : "bg-muted/50 dark:bg-white/5",
+                                ? "bg-white"
+                                : "bg-slate-100 dark:bg-slate-800",
                               !useLogo && (mcp.color || "bg-primary")
                             )}
                           >
@@ -588,66 +608,45 @@ const FeedPage = () => {
                               />
                             ) : (
                               <span className="flex items-center justify-center w-full h-full text-white">
-                                <Icon className="w-7 h-7" />
+                                <Icon className="w-6 h-6" />
                               </span>
                             )}
                           </div>
                           <div className="min-w-0 flex-1 pt-0.5">
-                            <h3 className="text-[15px] font-semibold text-foreground truncate">{mcp.name}</h3>
-                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{mcp.description}</p>
+                            <div className="flex items-start justify-between gap-2">
+                              <h3 className="text-[15px] font-semibold text-slate-900 dark:text-white truncate leading-tight">
+                                {mcp.name}
+                              </h3>
+                              {/* Status dot as View button */}
+                              <button
+                                onClick={() => router.push("/dashboard/tool-usecase")}
+                                className={cn(
+                                  "shrink-0 w-2.5 h-2.5 rounded-full transition-all cursor-pointer",
+                                  isConnected
+                                    ? "bg-emerald-500 shadow-sm shadow-emerald-500/50 hover:scale-125"
+                                    : "bg-slate-400 hover:scale-125"
+                                )}
+                                title="View"
+                              />
+                            </div>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                              {mcp.description}
+                            </p>
                           </div>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <button className="shrink-0 w-8 h-8 rounded-lg border border-border bg-muted/30 hover:bg-muted/60 inline-flex items-center justify-center">
-                                <MoreVertical className="w-4 h-4 text-muted-foreground" />
-                              </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-32">
-                              <DropdownMenuItem onClick={() => router.push("/dashboard/tool-usecase")}>
-                                <Eye className="w-4 h-4 mr-2" />
-                                View
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
                         </div>
                       </CardHeader>
-                      <CardContent className="px-4 pb-4 pt-0 flex items-center gap-2">
-                        {isConnected ? (
-                          <>
-                            <button
-                              className={cn(
-                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors border border-border bg-muted/40 dark:bg-white/5 text-foreground hover:bg-muted/60 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
-                              )}
-                            >
-                              <Eye className="w-4 h-4 shrink-0" />
-                              <span className="whitespace-nowrap">Manage Access</span>
-                            </button>
-                            <button
-                              className={cn(
-                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
-                                "border border-destructive/40 text-destructive bg-destructive/5",
-                                "hover:bg-destructive/10 focus:outline-none focus:ring-2 focus:ring-destructive/20 focus:ring-offset-2 focus:ring-offset-background"
-                              )}
-                            >
-                              <Unplug className="w-4 h-4 shrink-0" />
-                              Disconnect
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              className={cn(
-                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-all",
-                                "bg-primary text-primary-foreground shadow-sm",
-                                "hover:bg-primary/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background"
-                              )}
-                            >
-                              <Link2 className="w-4 h-4 shrink-0" />
-                              Connect
-                            </button>
-                            
-                          </>
-                        )}
+                      <CardContent className="px-4 pb-4 pt-1 mt-auto">
+                        <button
+                          className={cn(
+                            "w-full inline-flex items-center justify-center gap-2 h-10 px-3 rounded-lg text-sm font-semibold transition-all",
+                            isConnected
+                              ? "bg-emerald-500/15 text-emerald-700 border border-emerald-400/40 dark:text-emerald-300 dark:border-emerald-400/30 hover:bg-emerald-500/25"
+                              : "bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-[0_8px_18px_rgba(79,70,229,0.38)] hover:from-indigo-400 hover:to-blue-400"
+                          )}
+                        >
+                          <Link2 className="w-4 h-4 shrink-0" />
+                          {isConnected ? "Connected" : "Connect"}
+                        </button>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -688,58 +687,65 @@ const FeedPage = () => {
               </motion.button>
             </div>
 
-            {/* Tools Grid - Professional Wide Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5">
-              {mockAgents.slice(0, 3).map((agent, index) => (
-                <motion.div
-                  key={agent.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -4 }}
-                  className="relative group cursor-pointer"
-                  onClick={() => router.push("/dashboard/agent-store")}
-                >
-                  <Card
-                    className={cn(
-                      "overflow-hidden rounded-xl transition-all duration-200 group",
-                      "border border-border bg-card text-card-foreground",
-                      "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
-                    )}
+            {/* Tools Grid - Square boxes like Dashboard MoM style */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {mockAgents.slice(0, 6).map((agent, index) => {
+                const colors = [
+                  { bg: "from-emerald-50/80 to-white dark:from-emerald-950/30", border: "hover:border-emerald-200 dark:hover:border-emerald-800", dot: "bg-emerald-500" },
+                  { bg: "from-sky-50/80 to-white dark:from-sky-950/30", border: "hover:border-sky-200 dark:hover:border-sky-800", dot: "bg-sky-500" },
+                  { bg: "from-amber-50/80 to-white dark:from-amber-950/30", border: "hover:border-amber-200 dark:hover:border-amber-800", dot: "bg-amber-500" },
+                  { bg: "from-violet-50/80 to-white dark:from-violet-950/30", border: "hover:border-violet-200 dark:hover:border-violet-800", dot: "bg-violet-500" },
+                  { bg: "from-pink-50/80 to-white dark:from-pink-950/30", border: "hover:border-pink-200 dark:hover:border-pink-800", dot: "bg-pink-500" },
+                  { bg: "from-cyan-50/80 to-white dark:from-cyan-950/30", border: "hover:border-cyan-200 dark:hover:border-cyan-800", dot: "bg-cyan-500" },
+                ];
+                const color = colors[index % colors.length];
+                return (
+                  <motion.div
+                    key={agent.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.02 * Math.min(index, 12) }}
+                    className="relative group cursor-pointer"
+                    onClick={() => router.push("/dashboard/agent-store")}
                   >
-                    <CardHeader className="pb-1.5 pt-3.5 px-4">
-                      <div className="flex items-start gap-3">
-                        <div className="flex items-center justify-center w-11 h-11 rounded-lg shrink-0 overflow-hidden ring-1 ring-border/80 bg-white dark:bg-white">
-                          {agent.logoUrl ? (
-                            <img src={agent.logoUrl} alt="" className="w-6 h-6 object-contain" loading="lazy" />
-                          ) : (
-                            <Bot className="w-5 h-5 text-primary" />
+                    <Card
+                      className={cn(
+                        "aspect-square overflow-hidden rounded-2xl transition-all duration-200 group relative flex flex-col",
+                        `bg-gradient-to-br ${color.bg} dark:to-card border border-border/50 ${color.border} hover:shadow-lg`
+                      )}
+                    >
+                      {/* Status dot in top right */}
+                      <div className={`absolute top-3 right-3 w-2.5 h-2.5 rounded-full ${color.dot} shadow-sm`} />
+                      
+                      <CardHeader className="pb-2 pt-4 px-4">
+                        <div className="flex flex-col items-center text-center gap-3">
+                          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white dark:bg-white/10 shadow-sm ring-1 ring-border/50">
+                            {agent.logoUrl ? (
+                              <img src={agent.logoUrl} alt="" className="w-7 h-7 object-contain" loading="lazy" />
+                            ) : (
+                              <Bot className="w-6 h-6 text-primary" />
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h3 className="text-sm font-semibold text-foreground truncate">{agent.name}</h3>
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{agent.description}</p>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="px-4 pb-4 pt-0 mt-auto">
+                        <button
+                          className={cn(
+                            "w-full py-2 px-3 rounded-xl text-xs font-medium transition-all",
+                            "bg-primary text-primary-foreground hover:bg-primary/90"
                           )}
-                        </div>
-                        <div className="min-w-0 flex-1 pt-0.5">
-                          <h3 className="text-[15px] font-semibold text-foreground truncate">{agent.name}</h3>
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                            {agent.description}
-                          </p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-3 pt-0 flex items-center gap-1.5">
-                      <span className="inline-flex items-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                        {agent.pricing}
-                      </span>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Zap className="w-3 h-3 text-amber-500" />
-                        <span className="font-semibold">{agent.interactions}</span>
-                      </div>
-                      <button className="ml-auto inline-flex items-center justify-center gap-1 h-7 px-2.5 rounded-lg text-[11px] font-medium transition-colors border border-border bg-muted/30 dark:bg-white/5 text-foreground hover:bg-muted/50 dark:hover:bg-white/10">
-                        Open
-                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                      </button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                        >
+                          Open
+                        </button>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.section>
         </div>
@@ -780,58 +786,65 @@ const FeedPage = () => {
               </motion.button>
             </div>
 
-            {/* Tools Grid - Professional Wide Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5">
-              {mockAgents.slice(0, 3).map((agent, index) => (
-                <motion.div
-                  key={agent.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -4 }}
-                  className="relative group cursor-pointer"
-                  onClick={() => router.push("/dashboard/agent-store")}
-                >
-                  <Card
-                    className={cn(
-                      "overflow-hidden rounded-xl transition-all duration-200 group",
-                      "border border-border bg-card text-card-foreground",
-                      "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
-                    )}
+            {/* Tools Grid - Square boxes like Dashboard MoM style */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {mockAgents.slice(0, 6).map((agent, index) => {
+                const colors = [
+                  { bg: "from-emerald-50/80 to-white dark:from-emerald-950/30", border: "hover:border-emerald-200 dark:hover:border-emerald-800", dot: "bg-emerald-500" },
+                  { bg: "from-sky-50/80 to-white dark:from-sky-950/30", border: "hover:border-sky-200 dark:hover:border-sky-800", dot: "bg-sky-500" },
+                  { bg: "from-amber-50/80 to-white dark:from-amber-950/30", border: "hover:border-amber-200 dark:hover:border-amber-800", dot: "bg-amber-500" },
+                  { bg: "from-violet-50/80 to-white dark:from-violet-950/30", border: "hover:border-violet-200 dark:hover:border-violet-800", dot: "bg-violet-500" },
+                  { bg: "from-pink-50/80 to-white dark:from-pink-950/30", border: "hover:border-pink-200 dark:hover:border-pink-800", dot: "bg-pink-500" },
+                  { bg: "from-cyan-50/80 to-white dark:from-cyan-950/30", border: "hover:border-cyan-200 dark:hover:border-cyan-800", dot: "bg-cyan-500" },
+                ];
+                const color = colors[index % colors.length];
+                return (
+                  <motion.div
+                    key={agent.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.02 * Math.min(index, 12) }}
+                    className="relative group cursor-pointer"
+                    onClick={() => router.push("/dashboard/agent-store")}
                   >
-                    <CardHeader className="pb-1.5 pt-3.5 px-4">
-                      <div className="flex items-start gap-3">
-                        <div className="flex items-center justify-center w-11 h-11 rounded-lg shrink-0 overflow-hidden ring-1 ring-border/80 bg-white dark:bg-white">
-                          {agent.logoUrl ? (
-                            <img src={agent.logoUrl} alt="" className="w-6 h-6 object-contain" loading="lazy" />
-                          ) : (
-                            <Bot className="w-5 h-5 text-primary" />
+                    <Card
+                      className={cn(
+                        "aspect-square overflow-hidden rounded-2xl transition-all duration-200 group relative flex flex-col",
+                        `bg-gradient-to-br ${color.bg} dark:to-card border border-border/50 ${color.border} hover:shadow-lg`
+                      )}
+                    >
+                      {/* Status dot in top right */}
+                      <div className={`absolute top-3 right-3 w-2.5 h-2.5 rounded-full ${color.dot} shadow-sm`} />
+                      
+                      <CardHeader className="pb-2 pt-4 px-4">
+                        <div className="flex flex-col items-center text-center gap-3">
+                          <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-white dark:bg-white/10 shadow-sm ring-1 ring-border/50">
+                            {agent.logoUrl ? (
+                              <img src={agent.logoUrl} alt="" className="w-7 h-7 object-contain" loading="lazy" />
+                            ) : (
+                              <Bot className="w-6 h-6 text-primary" />
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h3 className="text-sm font-semibold text-foreground truncate">{agent.name}</h3>
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{agent.description}</p>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="px-4 pb-4 pt-0 mt-auto">
+                        <button
+                          className={cn(
+                            "w-full py-2 px-3 rounded-xl text-xs font-medium transition-all",
+                            "bg-primary text-primary-foreground hover:bg-primary/90"
                           )}
-                        </div>
-                        <div className="min-w-0 flex-1 pt-0.5">
-                          <h3 className="text-[15px] font-semibold text-foreground truncate">{agent.name}</h3>
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                            {agent.description}
-                          </p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="px-4 pb-3 pt-0 flex items-center gap-1.5">
-                      <span className="inline-flex items-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                        {agent.pricing}
-                      </span>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Zap className="w-3 h-3 text-amber-500" />
-                        <span className="font-semibold">{agent.interactions}</span>
-                      </div>
-                      <button className="ml-auto inline-flex items-center justify-center gap-1 h-7 px-2.5 rounded-lg text-[11px] font-medium transition-colors border border-border bg-muted/30 dark:bg-white/5 text-foreground hover:bg-muted/50 dark:hover:bg-white/10">
-                        Open
-                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-                      </button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                        >
+                          Open
+                        </button>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                );
+              })}
             </div>
           </motion.section>
 
@@ -1070,8 +1083,8 @@ const FeedPage = () => {
               </motion.button>
             </div>
 
-            {/* MCPs Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+            {/* MCPs Grid - Matching ToolUsecasePage style */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
               {mockMCPs.slice(0, 6).map((mcp, index) => {
                 const Icon = mcp.icon;
                 const isConnected = mcp.status === "connected";
@@ -1085,20 +1098,20 @@ const FeedPage = () => {
                   >
                     <Card
                       className={cn(
-                        "h-full overflow-hidden rounded-2xl transition-all duration-200 group",
-                        "border border-border bg-card text-card-foreground",
-                        "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
+                        "overflow-hidden rounded-xl transition-all duration-200 group flex flex-col",
+                        "border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111722] text-slate-900 dark:text-white",
+                        "shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.45)] hover:-translate-y-0.5 hover:border-indigo-300 dark:hover:border-indigo-400/45 hover:shadow-[0_10px_24px_rgba(79,70,229,0.14)] dark:hover:shadow-[0_14px_30px_rgba(37,99,235,0.22)]"
                       )}
                     >
                       <CardHeader className="pb-2 pt-4 px-4">
-                        <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3">
                           <div
                             className={cn(
-                              "flex items-center justify-center w-12 h-12 rounded-xl shrink-0 overflow-hidden",
-                              "ring-1 ring-border/80",
+                              "flex items-center justify-center w-11 h-11 rounded-lg shrink-0 overflow-hidden",
+                              "ring-1 ring-slate-200 dark:ring-white/15",
                               useLogo
-                                ? "bg-white dark:bg-white"
-                                : "bg-muted/50 dark:bg-white/5",
+                                ? "bg-white"
+                                : "bg-slate-100 dark:bg-slate-800",
                               !useLogo && (mcp.color || "bg-primary")
                             )}
                           >
@@ -1114,66 +1127,45 @@ const FeedPage = () => {
                               />
                             ) : (
                               <span className="flex items-center justify-center w-full h-full text-white">
-                                <Icon className="w-7 h-7" />
+                                <Icon className="w-6 h-6" />
                               </span>
                             )}
                           </div>
                           <div className="min-w-0 flex-1 pt-0.5">
-                            <h3 className="text-[15px] font-semibold text-foreground truncate">{mcp.name}</h3>
-                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{mcp.description}</p>
+                            <div className="flex items-start justify-between gap-2">
+                              <h3 className="text-[15px] font-semibold text-slate-900 dark:text-white truncate leading-tight">
+                                {mcp.name}
+                              </h3>
+                              {/* Status dot as View button */}
+                              <button
+                                onClick={() => router.push("/dashboard/tool-usecase")}
+                                className={cn(
+                                  "shrink-0 w-2.5 h-2.5 rounded-full transition-all cursor-pointer",
+                                  isConnected
+                                    ? "bg-emerald-500 shadow-sm shadow-emerald-500/50 hover:scale-125"
+                                    : "bg-slate-400 hover:scale-125"
+                                )}
+                                title="View"
+                              />
+                            </div>
+                            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
+                              {mcp.description}
+                            </p>
                           </div>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <button className="shrink-0 w-8 h-8 rounded-lg border border-border bg-muted/30 hover:bg-muted/60 inline-flex items-center justify-center">
-                                <MoreVertical className="w-4 h-4 text-muted-foreground" />
-                              </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-32">
-                              <DropdownMenuItem onClick={() => router.push("/dashboard/tool-usecase")}>
-                                <Eye className="w-4 h-4 mr-2" />
-                                View
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
                         </div>
                       </CardHeader>
-                      <CardContent className="px-4 pb-4 pt-0 flex items-center gap-2">
-                        {isConnected ? (
-                          <>
-                            <button
-                              className={cn(
-                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors border border-border bg-muted/40 dark:bg-white/5 text-foreground hover:bg-muted/60 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
-                              )}
-                            >
-                              <Eye className="w-4 h-4 shrink-0" />
-                              <span className="whitespace-nowrap">Manage Access</span>
-                            </button>
-                            <button
-                              className={cn(
-                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
-                                "border border-destructive/40 text-destructive bg-destructive/5",
-                                "hover:bg-destructive/10 focus:outline-none focus:ring-2 focus:ring-destructive/20 focus:ring-offset-2 focus:ring-offset-background"
-                              )}
-                            >
-                              <Unplug className="w-4 h-4 shrink-0" />
-                              Disconnect
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              className={cn(
-                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-all",
-                                "bg-primary text-primary-foreground shadow-sm",
-                                "hover:bg-primary/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background"
-                              )}
-                            >
-                              <Link2 className="w-4 h-4 shrink-0" />
-                              Connect
-                            </button>
-                            
-                          </>
-                        )}
+                      <CardContent className="px-4 pb-4 pt-1 mt-auto">
+                        <button
+                          className={cn(
+                            "w-full inline-flex items-center justify-center gap-2 h-10 px-3 rounded-lg text-sm font-semibold transition-all",
+                            isConnected
+                              ? "bg-emerald-500/15 text-emerald-700 border border-emerald-400/40 dark:text-emerald-300 dark:border-emerald-400/30 hover:bg-emerald-500/25"
+                              : "bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-[0_8px_18px_rgba(79,70,229,0.38)] hover:from-indigo-400 hover:to-blue-400"
+                          )}
+                        >
+                          <Link2 className="w-4 h-4 shrink-0" />
+                          {isConnected ? "Connected" : "Connect"}
+                        </button>
                       </CardContent>
                     </Card>
                   </motion.div>
