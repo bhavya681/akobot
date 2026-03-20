@@ -50,7 +50,7 @@ const supportLinks = [
   {
     name: "Discord Community",
     description: "Chat with other creators",
-    href: "#",
+    href: "https://discord.gg/GADcJeya",
     icon: MessageCircle,
     action: "Join Discord"
   },
@@ -77,7 +77,7 @@ const socialLinks = [
   {
     icon: MessageCircle,
     label: "Discord",
-    href: "#"
+    href: "https://discord.gg/GADcJeya"
   }
 ];
 
