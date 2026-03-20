@@ -26,8 +26,15 @@ import {
   Cloud,
   Figma,
   CreditCard,
+  MoreVertical,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { FeedItem } from "@/components/feed/FeedCard";
@@ -200,76 +207,83 @@ interface Agent {
   createdAt: Date;
   interactions?: number;
   category?: string;
+  logoUrl?: string;
 }
 
 const mockAgents: Agent[] = [
   {
     id: "1",
-    name: "Cnergee",
-    description: "Integrated network security products—SD-WAN, NGFW, Managed WiFi",
+    name: "SEO Engine",
+    description: "Monitor rankings, optimize metadata, and track keyword opportunities.",
     status: "PUBLISHED",
     pricing: "FREE",
     createdAt: new Date(),
     interactions: 1250,
-    category: "Business",
+    category: "Marketing",
+    logoUrl: "https://cdn.simpleicons.org/googleanalytics/E37400",
   },
   {
     id: "2",
-    name: "Instagram",
-    description: "Social media assistant for Instagram management",
+    name: "Ticket Tool",
+    description: "Create, assign, and monitor support tickets with SLA tracking.",
     status: "PUBLISHED",
     pricing: "FREE",
     createdAt: new Date(),
     interactions: 890,
-    category: "Social",
+    category: "Support",
+    logoUrl: "https://cdn.simpleicons.org/jira/0052CC",
   },
   {
     id: "3",
-    name: "Yamaha Motor India",
-    description: "Motorcycle and scooter information assistant",
+    name: "Mail Shooter",
+    description: "Run bulk email campaigns, templates, and delivery tracking.",
     status: "PUBLISHED",
     pricing: "FREE",
     createdAt: new Date(),
     interactions: 2100,
-    category: "Automotive",
+    category: "Communication",
+    logoUrl: "https://cdn.simpleicons.org/maildotru/005FF9",
   },
   {
     id: "4",
-    name: "IIT Roorkee",
-    description: "Technical research university information assistant",
+    name: "Reminder Tool",
+    description: "Schedule reminders for tasks, follow-ups, and recurring workflows.",
     status: "PUBLISHED",
     pricing: "FREE",
     createdAt: new Date(),
     interactions: 1560,
-    category: "Education",
+    category: "Productivity",
+    logoUrl: "https://cdn.simpleicons.org/googlecalendar/4285F4",
   },
   {
     id: "5",
-    name: "Cloud Support",
-    description: "Help users raise support requests on Scogo Cloud Platform",
+    name: "Data Analytics",
+    description: "Analyze datasets, generate reports, and visualize KPI trends.",
     status: "PUBLISHED",
     pricing: "FREE",
     createdAt: new Date(),
     interactions: 980,
-    category: "Support",
+    category: "Analytics",
+    logoUrl: "https://cdn.simpleicons.org/tableau/E97627",
   },
   {
     id: "6",
-    name: "Globalnet",
-    description: "ICT Solutions and infrastructure information",
+    name: "Workflow Automator",
+    description: "Connect tools and automate repeated operational tasks.",
     status: "PUBLISHED",
     pricing: "FREE",
     createdAt: new Date(),
     interactions: 750,
-    category: "Technology",
+    category: "Automation",
+    logoUrl: "https://cdn.simpleicons.org/zapier/FF4A00",
   },
 ];
 
 const agentCategories = [
-  { id: "business", label: "Business", icon: Briefcase, count: 24 },
-  { id: "social", label: "Social Media", icon: Users, count: 18 },
-  { id: "tech", label: "Technology", icon: Code2, count: 32 },
-  { id: "education", label: "Education", icon: Globe, count: 15 },
+  { id: "marketing", label: "Marketing Tools", icon: Briefcase, count: 24 },
+  { id: "support", label: "Support Tools", icon: Users, count: 18 },
+  { id: "automation", label: "Automation", icon: Code2, count: 32 },
+  { id: "analytics", label: "Analytics", icon: Globe, count: 15 },
 ];
 
 const FeedPage = () => {
@@ -550,11 +564,11 @@ const FeedPage = () => {
                         "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
                       )}
                     >
-                      <CardHeader className="pb-2 pt-5 px-5">
-                        <div className="flex items-start gap-4">
+                      <CardHeader className="pb-2 pt-4 px-4">
+                        <div className="flex items-start justify-between gap-3">
                           <div
                             className={cn(
-                              "flex items-center justify-center w-14 h-14 rounded-xl shrink-0 overflow-hidden",
+                              "flex items-center justify-center w-12 h-12 rounded-xl shrink-0 overflow-hidden",
                               "ring-1 ring-border/80",
                               useLogo
                                 ? "bg-white dark:bg-white"
@@ -566,7 +580,7 @@ const FeedPage = () => {
                               <img
                                 src={mcp.logoUrl}
                                 alt=""
-                                className="w-8 h-8 object-contain"
+                                className="w-7 h-7 object-contain"
                                 loading="lazy"
                                 onError={() =>
                                   setLogoErrors((prev) => ({ ...prev, [mcp.id]: true }))
@@ -579,16 +593,25 @@ const FeedPage = () => {
                             )}
                           </div>
                           <div className="min-w-0 flex-1 pt-0.5">
-                            <h3 className="text-base font-semibold text-foreground truncate">
-                              {mcp.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                              {mcp.description}
-                            </p>
+                            <h3 className="text-[15px] font-semibold text-foreground truncate">{mcp.name}</h3>
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{mcp.description}</p>
                           </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button className="shrink-0 w-8 h-8 rounded-lg border border-border bg-muted/30 hover:bg-muted/60 inline-flex items-center justify-center">
+                                <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-32">
+                              <DropdownMenuItem onClick={() => router.push("/dashboard/tool-usecase")}>
+                                <Eye className="w-4 h-4 mr-2" />
+                                View
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </CardHeader>
-                      <CardContent className="px-5 pb-5 pt-0 flex items-center gap-2">
+                      <CardContent className="px-4 pb-4 pt-0 flex items-center gap-2">
                         {isConnected ? (
                           <>
                             <button
@@ -622,17 +645,7 @@ const FeedPage = () => {
                               <Link2 className="w-4 h-4 shrink-0" />
                               Connect
                             </button>
-                            <button
-                              onClick={() => router.push("/dashboard/tool-usecase")}
-                              className={cn(
-                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
-                                "border border-border bg-muted/30 dark:bg-white/5 text-foreground",
-                                "hover:bg-muted/50 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
-                              )}
-                            >
-                              View
-                              <ArrowRight className="w-4 h-4 shrink-0" />
-                            </button>
+                            
                           </>
                         )}
                       </CardContent>
@@ -643,7 +656,7 @@ const FeedPage = () => {
             </div>
           </motion.section>
 
-      {/* Explore Agents Section */}
+      {/* Explore Tools Section */}
           <motion.section
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -660,8 +673,8 @@ const FeedPage = () => {
                   <Bot className="w-7 h-7 text-primary" />
                 </motion.div>
                 <div>
-                  <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">Explore Agents</h2>
-                  <p className="text-xs text-muted-foreground">Discover and interact with powerful AI agents</p>
+                  <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">Explore Tools</h2>
+                  <p className="text-xs text-muted-foreground">Discover and use powerful productivity tools</p>
                 </div>
               </div>
               <motion.button
@@ -675,56 +688,56 @@ const FeedPage = () => {
               </motion.button>
             </div>
 
-            {/* Agents Grid - Professional Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-              {mockAgents.slice(0, 6).map((agent, index) => (
+            {/* Tools Grid - Professional Wide Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5">
+              {mockAgents.slice(0, 3).map((agent, index) => (
                 <motion.div
                   key={agent.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileHover={{ y: -4 }}
                   className="relative group cursor-pointer"
                   onClick={() => router.push("/dashboard/agent-store")}
                 >
-                  {/* Card with Glass Morphism */}
-                  <div className="relative rounded-2xl p-4 backdrop-blur-xl bg-card border-2 border-border hover:border-primary/50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
-                    {/* Gradient Overlay on Hover */}
-                    <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
-                    {/* Agent Icon */}
-                    <div className="relative mb-3">
-                      <div className="w-12 h-12 rounded-xl bg-primary/30 border-2 border-primary/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <Bot className="w-6 h-6 text-primary" />
-                      </div>
-                    </div>
-                    
-                    {/* Agent Info */}
-                    <div className="relative z-10">
-                      <h3 className="text-sm font-bold text-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors">
-                        {agent.name}
-                      </h3>
-                      <p className="text-xs text-muted-foreground dark:text-white/60 line-clamp-2 mb-3 leading-relaxed">
-                        {agent.description}
-                      </p>
-                      
-                      {/* Footer */}
-                      <div className="flex items-center justify-between pt-3 border-t border-border dark:border-white/10">
-                        <span className="text-xs px-2 py-1 rounded-lg bg-green-500/20 text-green-400 font-semibold border border-green-500/30">
-                          {agent.pricing}
-                        </span>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground dark:text-white/50">
-                          <Zap className="w-3 h-3 text-yellow-500 dark:text-yellow-400" />
-                          <span className="font-semibold">{agent.interactions}</span>
+                  <Card
+                    className={cn(
+                      "overflow-hidden rounded-xl transition-all duration-200 group",
+                      "border border-border bg-card text-card-foreground",
+                      "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
+                    )}
+                  >
+                    <CardHeader className="pb-1.5 pt-3.5 px-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex items-center justify-center w-11 h-11 rounded-lg shrink-0 overflow-hidden ring-1 ring-border/80 bg-white dark:bg-white">
+                          {agent.logoUrl ? (
+                            <img src={agent.logoUrl} alt="" className="w-6 h-6 object-contain" loading="lazy" />
+                          ) : (
+                            <Bot className="w-5 h-5 text-primary" />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1 pt-0.5">
+                          <h3 className="text-[15px] font-semibold text-foreground truncate">{agent.name}</h3>
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                            {agent.description}
+                          </p>
                         </div>
                       </div>
-                    </div>
-                    
-                    {/* Shine Effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                    </div>
-                  </div>
+                    </CardHeader>
+                    <CardContent className="px-4 pb-3 pt-0 flex items-center gap-1.5">
+                      <span className="inline-flex items-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                        {agent.pricing}
+                      </span>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Zap className="w-3 h-3 text-amber-500" />
+                        <span className="font-semibold">{agent.interactions}</span>
+                      </div>
+                      <button className="ml-auto inline-flex items-center justify-center gap-1 h-7 px-2.5 rounded-lg text-[11px] font-medium transition-colors border border-border bg-muted/30 dark:bg-white/5 text-foreground hover:bg-muted/50 dark:hover:bg-white/10">
+                        Open
+                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                      </button>
+                    </CardContent>
+                  </Card>
                 </motion.div>
               ))}
             </div>
@@ -735,7 +748,7 @@ const FeedPage = () => {
       {/* Professional Agents Section - Show all sections when agents filter is active */}
       {activeFilter === "agents" && (
         <div className="px-4 lg:px-6 py-8 space-y-8">
-          {/* Section 1: Explore Agents - Professional Design */}
+          {/* Section 1: Explore Tools - Professional Design */}
           <motion.section
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -752,8 +765,8 @@ const FeedPage = () => {
                   <Bot className="w-7 h-7 text-primary" />
                 </motion.div>
                 <div>
-                  <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">Explore Agents</h2>
-                  <p className="text-xs text-muted-foreground">Discover and interact with powerful AI agents</p>
+                  <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">Explore Tools</h2>
+                  <p className="text-xs text-muted-foreground">Discover and use powerful productivity tools</p>
                 </div>
               </div>
               <motion.button
@@ -767,62 +780,62 @@ const FeedPage = () => {
               </motion.button>
             </div>
 
-            {/* Agents Grid - Professional Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-              {mockAgents.slice(0, 6).map((agent, index) => (
+            {/* Tools Grid - Professional Wide Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5">
+              {mockAgents.slice(0, 3).map((agent, index) => (
                 <motion.div
                   key={agent.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileHover={{ y: -4 }}
                   className="relative group cursor-pointer"
                   onClick={() => router.push("/dashboard/agent-store")}
                 >
-                  {/* Card with Glass Morphism */}
-                  <div className="relative rounded-2xl p-4 backdrop-blur-xl bg-card border-2 border-border hover:border-primary/50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:shadow-primary/20 overflow-hidden">
-                    {/* Gradient Overlay on Hover */}
-                    <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
-                    {/* Agent Icon */}
-                    <div className="relative mb-3">
-                      <div className="w-12 h-12 rounded-xl bg-primary/30 border-2 border-primary/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <Bot className="w-6 h-6 text-primary" />
-                      </div>
-                    </div>
-                    
-                    {/* Agent Info */}
-                    <div className="relative z-10">
-                      <h3 className="text-sm font-bold text-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors">
-                        {agent.name}
-                      </h3>
-                      <p className="text-xs text-muted-foreground dark:text-white/60 line-clamp-2 mb-3 leading-relaxed">
-                        {agent.description}
-                      </p>
-                      
-                      {/* Footer */}
-                      <div className="flex items-center justify-between pt-3 border-t border-border dark:border-white/10">
-                        <span className="text-xs px-2 py-1 rounded-lg bg-green-500/20 text-green-400 font-semibold border border-green-500/30">
-                          {agent.pricing}
-                        </span>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground dark:text-white/50">
-                          <Zap className="w-3 h-3 text-yellow-500 dark:text-yellow-400" />
-                          <span className="font-semibold">{agent.interactions}</span>
+                  <Card
+                    className={cn(
+                      "overflow-hidden rounded-xl transition-all duration-200 group",
+                      "border border-border bg-card text-card-foreground",
+                      "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
+                    )}
+                  >
+                    <CardHeader className="pb-1.5 pt-3.5 px-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex items-center justify-center w-11 h-11 rounded-lg shrink-0 overflow-hidden ring-1 ring-border/80 bg-white dark:bg-white">
+                          {agent.logoUrl ? (
+                            <img src={agent.logoUrl} alt="" className="w-6 h-6 object-contain" loading="lazy" />
+                          ) : (
+                            <Bot className="w-5 h-5 text-primary" />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1 pt-0.5">
+                          <h3 className="text-[15px] font-semibold text-foreground truncate">{agent.name}</h3>
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                            {agent.description}
+                          </p>
                         </div>
                       </div>
-                    </div>
-                    
-                    {/* Shine Effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                    </div>
-                  </div>
+                    </CardHeader>
+                    <CardContent className="px-4 pb-3 pt-0 flex items-center gap-1.5">
+                      <span className="inline-flex items-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                        {agent.pricing}
+                      </span>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Zap className="w-3 h-3 text-amber-500" />
+                        <span className="font-semibold">{agent.interactions}</span>
+                      </div>
+                      <button className="ml-auto inline-flex items-center justify-center gap-1 h-7 px-2.5 rounded-lg text-[11px] font-medium transition-colors border border-border bg-muted/30 dark:bg-white/5 text-foreground hover:bg-muted/50 dark:hover:bg-white/10">
+                        Open
+                        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                      </button>
+                    </CardContent>
+                  </Card>
                 </motion.div>
               ))}
             </div>
           </motion.section>
 
-        {/* Section 3: Agent Categories - Professional Design */}
+        {/* Section 3: Tool Categories - Professional Design */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -839,8 +852,8 @@ const FeedPage = () => {
                 <Grid3x3 className="w-7 h-7 text-blue-400" />
               </motion.div>
               <div>
-                <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">Agent Categories</h2>
-                <p className="text-xs text-muted-foreground">Browse agents by category</p>
+                <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">Tool Categories</h2>
+                <p className="text-xs text-muted-foreground">Browse tools by category</p>
               </div>
             </div>
           </div>
@@ -886,7 +899,7 @@ const FeedPage = () => {
                           {category.label}
                         </h3>
                         <p className="text-sm text-muted-foreground dark:text-white/60 font-semibold">
-                          {category.count} agents
+                          {category.count} tools
                         </p>
                       </div>
                     </div>
@@ -902,7 +915,7 @@ const FeedPage = () => {
           </div>
         </motion.section>
 
-        {/* Section 4: My Agents - Premium Design */}
+        {/* Section 4: My Tools - Premium Design */}
         <motion.section
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -919,8 +932,8 @@ const FeedPage = () => {
                 <User className="w-7 h-7 text-green-400" />
               </motion.div>
               <div>
-                <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">My Agents</h2>
-                <p className="text-xs text-muted-foreground">Your created and saved agents</p>
+                <h2 className="text-lg md:text-xl font-bold text-foreground mb-0.5">My Tools</h2>
+                <p className="text-xs text-muted-foreground">Your created and saved tools</p>
               </div>
             </div>
             <motion.button
@@ -929,7 +942,7 @@ const FeedPage = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Create Agent
+              Create Tool
               <ArrowRight className="w-4 h-4" />
             </motion.button>
           </div>
@@ -1008,7 +1021,7 @@ const FeedPage = () => {
               >
                 <Bot className="w-10 h-10 text-green-500 dark:text-green-400" />
               </motion.div>
-              <p className="text-base text-foreground dark:text-white/80 mb-3 font-semibold">No agents created yet</p>
+              <p className="text-base text-foreground dark:text-white/80 mb-3 font-semibold">No tools created yet</p>
               <motion.button
                 onClick={() => router.push("/dashboard/agent-store")}
                 className="text-sm text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-bold flex items-center gap-2 mx-auto"
@@ -1077,11 +1090,11 @@ const FeedPage = () => {
                         "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
                       )}
                     >
-                      <CardHeader className="pb-2 pt-5 px-5">
-                        <div className="flex items-start gap-4">
+                      <CardHeader className="pb-2 pt-4 px-4">
+                        <div className="flex items-start justify-between gap-3">
                           <div
                             className={cn(
-                              "flex items-center justify-center w-14 h-14 rounded-xl shrink-0 overflow-hidden",
+                              "flex items-center justify-center w-12 h-12 rounded-xl shrink-0 overflow-hidden",
                               "ring-1 ring-border/80",
                               useLogo
                                 ? "bg-white dark:bg-white"
@@ -1093,7 +1106,7 @@ const FeedPage = () => {
                               <img
                                 src={mcp.logoUrl}
                                 alt=""
-                                className="w-8 h-8 object-contain"
+                                className="w-7 h-7 object-contain"
                                 loading="lazy"
                                 onError={() =>
                                   setLogoErrors((prev) => ({ ...prev, [mcp.id]: true }))
@@ -1106,16 +1119,25 @@ const FeedPage = () => {
                             )}
                           </div>
                           <div className="min-w-0 flex-1 pt-0.5">
-                            <h3 className="text-base font-semibold text-foreground truncate">
-                              {mcp.name}
-                            </h3>
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                              {mcp.description}
-                            </p>
+                            <h3 className="text-[15px] font-semibold text-foreground truncate">{mcp.name}</h3>
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{mcp.description}</p>
                           </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button className="shrink-0 w-8 h-8 rounded-lg border border-border bg-muted/30 hover:bg-muted/60 inline-flex items-center justify-center">
+                                <MoreVertical className="w-4 h-4 text-muted-foreground" />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-32">
+                              <DropdownMenuItem onClick={() => router.push("/dashboard/tool-usecase")}>
+                                <Eye className="w-4 h-4 mr-2" />
+                                View
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </CardHeader>
-                      <CardContent className="px-5 pb-5 pt-0 flex items-center gap-2">
+                      <CardContent className="px-4 pb-4 pt-0 flex items-center gap-2">
                         {isConnected ? (
                           <>
                             <button
@@ -1149,17 +1171,7 @@ const FeedPage = () => {
                               <Link2 className="w-4 h-4 shrink-0" />
                               Connect
                             </button>
-                            <button
-                              onClick={() => router.push("/dashboard/tool-usecase")}
-                              className={cn(
-                                "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
-                                "border border-border bg-muted/30 dark:bg-white/5 text-foreground",
-                                "hover:bg-muted/50 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
-                              )}
-                            >
-                              View
-                              <ArrowRight className="w-4 h-4 shrink-0" />
-                            </button>
+                            
                           </>
                         )}
                       </CardContent>

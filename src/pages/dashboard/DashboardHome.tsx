@@ -422,64 +422,117 @@ const DashboardHome = () => {
         {/* Right column: four equal dashboards (Support, SEO, Data, MoM) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {/* Support Agent Dashboard */}
-          <div className={summaryCardBase}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                Support Agent Dashboard
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/60 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-600">
+          <div className={`${summaryCardBase} relative overflow-hidden`}>
+            <div className="pointer-events-none absolute inset-0 rounded-2xl border border-emerald-400/40 animate-pulse" />
+            <div className="pointer-events-none absolute -top-8 -right-8 h-20 w-20 rounded-full bg-emerald-500/20 dark:bg-emerald-500/25 blur-2xl" />
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground/90">
+                  Support Agent Dashboard
+                </span>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Ticket load and SLA health
+                </p>
+              </div>
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/60 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-500">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Live
               </span>
             </div>
-            <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
               Ticket load, SLAs, and response quality in one place.
             </p>
+            <div className="mt-3 flex items-center justify-between text-[11px]">
+              <span className="text-muted-foreground">SLA Performance</span>
+              <span className="font-semibold text-emerald-600 dark:text-emerald-400">94.2%</span>
+            </div>
           </div>
 
           {/* SEO Engine Dashboard */}
-          <div className={summaryCardBase}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                SEO Engine Dashboard
-              </span>
+          <div className={`${summaryCardBase} relative overflow-hidden`}>
+            <div
+              className="pointer-events-none absolute inset-0 rounded-2xl border border-sky-400/40 animate-pulse"
+              style={{ animationDelay: "180ms" }}
+            />
+            <div className="pointer-events-none absolute -top-8 -right-8 h-20 w-20 rounded-full bg-sky-500/20 dark:bg-sky-500/25 blur-2xl" />
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground/90">
+                  SEO Engine Dashboard
+                </span>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Ranking and keyword movement
+                </p>
+              </div>
               <span className="inline-flex items-center gap-1 rounded-full border border-sky-400/60 bg-sky-500/10 px-2 py-0.5 text-[10px] text-sky-500">
                 Optimizing
               </span>
             </div>
-            <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
               Monitor rankings, content gaps, and keyword coverage.
             </p>
+            <div className="mt-3 flex items-center justify-between text-[11px]">
+              <span className="text-muted-foreground">Keyword Growth</span>
+              <span className="font-semibold text-sky-600 dark:text-sky-400">+18</span>
+            </div>
           </div>
 
           {/* Data Analysis Dashboard */}
-          <div className={summaryCardBase}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                Data Analysis Dashboard
-              </span>
+          <div className={`${summaryCardBase} relative overflow-hidden`}>
+            <div
+              className="pointer-events-none absolute inset-0 rounded-2xl border border-amber-400/40 animate-pulse"
+              style={{ animationDelay: "320ms" }}
+            />
+            <div className="pointer-events-none absolute -top-8 -right-8 h-20 w-20 rounded-full bg-amber-500/20 dark:bg-amber-500/25 blur-2xl" />
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground/90">
+                  Data Analysis Dashboard
+                </span>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Insights and report tracking
+                </p>
+              </div>
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-amber-400/70 bg-amber-500/10 text-amber-500">
                 <Database className="w-3.5 h-3.5" />
               </span>
             </div>
-            <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
               Track reports, insights, and scheduled analytics.
             </p>
+            <div className="mt-3 flex items-center justify-between text-[11px]">
+              <span className="text-muted-foreground">Reports Generated</span>
+              <span className="font-semibold text-amber-600 dark:text-amber-400">12</span>
+            </div>
           </div>
 
           {/* MoM Master Dashboard */}
-          <div className={summaryCardBase}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                MoM Master Dashboard
-              </span>
+          <div className={`${summaryCardBase} relative overflow-hidden`}>
+            <div
+              className="pointer-events-none absolute inset-0 rounded-2xl border border-violet-400/40 animate-pulse"
+              style={{ animationDelay: "460ms" }}
+            />
+            <div className="pointer-events-none absolute -top-8 -right-8 h-20 w-20 rounded-full bg-violet-500/20 dark:bg-violet-500/25 blur-2xl" />
+            <div className="flex items-start justify-between mb-3">
+              <div>
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground/90">
+                  MoM Master Dashboard
+                </span>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Meeting notes and follow-ups
+                </p>
+              </div>
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-primary/60 bg-primary/10 text-primary">
                 <FileText className="w-3.5 h-3.5" />
               </span>
             </div>
-            <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
               Central hub for minutes of meetings and follow-ups.
             </p>
+            <div className="mt-3 flex items-center justify-between text-[11px]">
+              <span className="text-muted-foreground">Meetings Processed</span>
+              <span className="font-semibold text-violet-600 dark:text-violet-400">9</span>
+            </div>
           </div>
         </div>
       </motion.div>

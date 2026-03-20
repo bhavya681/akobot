@@ -96,6 +96,9 @@ const AgentLLMPage = () => {
   const [loadingModels, setLoadingModels] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const voiceSocketRef = useRef<WebSocket | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -106,6 +109,7 @@ const AgentLLMPage = () => {
   const [playingTtsId, setPlayingTtsId] = useState<string | null>(null);
   const [ttsLoadingId, setTtsLoadingId] = useState<string | null>(null);
   const [voicesLoading, setVoicesLoading] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   /** Normalize voices from API: array, { voices }, or { "language": VoiceItem[] } */
@@ -247,20 +251,61 @@ const AgentLLMPage = () => {
     }
   };
 
+  const addFiles = useCallback((fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0) return;
+    const incoming = Array.from(fileList);
+    setAttachedFiles((prev) => {
+      const next = [...prev];
+      for (const file of incoming) {
+        const alreadyAdded = next.some(
+          (f) =>
+            f.name === file.name &&
+            f.size === file.size &&
+            f.lastModified === file.lastModified
+        );
+        if (!alreadyAdded) next.push(file);
+      }
+      return next;
+    });
+    toast.success(`${incoming.length} file${incoming.length > 1 ? "s" : ""} added`);
+  }, []);
+
+  const handleFilePick = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      addFiles(e.target.files);
+      e.target.value = "";
+    },
+    [addFiles]
+  );
+
+  const removeAttachedFile = useCallback((idx: number) => {
+    setAttachedFiles((prev) => prev.filter((_, i) => i !== idx));
+  }, []);
+
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    if ((!input.trim() && attachedFiles.length === 0) || isLoading) return;
+
+    const filesNote =
+      attachedFiles.length > 0
+        ? `\n\nAttached files:\n${attachedFiles
+            .map((f) => `- ${f.name} (${Math.max(1, Math.round(f.size / 1024))} KB)`)
+            .join("\n")}`
+        : "";
+    const composedInput =
+      input.trim() || (attachedFiles.length > 0 ? "Please review my uploaded files." : "");
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "user",
-      content: input.trim(),
+      content: `${composedInput}${filesNote}`,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
-    const currentInput = input.trim();
+    const currentInput = composedInput;
     setInput("");
+    setAttachedFiles([]);
 
     try {
       const startTime = Date.now();
@@ -626,6 +671,30 @@ const AgentLLMPage = () => {
           </div>
         </motion.header>
 
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          className="hidden"
+          onChange={handleFilePick}
+        />
+        <input
+          ref={imageInputRef}
+          type="file"
+          multiple
+          accept="image/*"
+          className="hidden"
+          onChange={handleFilePick}
+        />
+        <input
+          ref={videoInputRef}
+          type="file"
+          multiple
+          accept="video/*"
+          className="hidden"
+          onChange={handleFilePick}
+        />
+
         {/* Messages Area - flex-1 with min-h-0 so it scrolls correctly */}
         <div
           className={`flex-1 min-h-0 overflow-y-auto ${hasMessages ? "px-2 sm:px-3 py-6" : "flex flex-col items-center justify-center"}`}
@@ -687,17 +756,37 @@ const AgentLLMPage = () => {
                     </div>
                     <div className="flex items-center justify-between px-3 pb-3 pt-1 border-t border-gray-100 dark:border-white/5">
                       <div className="flex items-center gap-1">
-                        <button type="button" className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors" title="Upload">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                          title="Upload"
+                        >
                           <Upload className="w-4 h-4" />
                         </button>
-                        <button type="button" className="p-2 rounded-full bg-violet-600 dark:bg-violet-500 text-white hover:bg-violet-700 dark:hover:bg-violet-600 transition-colors shadow-md" title="Attach">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="p-2 rounded-full bg-violet-600 dark:bg-violet-500 text-white hover:bg-violet-700 dark:hover:bg-violet-600 transition-colors shadow-md"
+                          title="Attach"
+                        >
                           <Plus className="w-4 h-4" />
                         </button>
                         <div className="flex items-center rounded-lg border border-gray-200/80 dark:border-white/10 overflow-hidden">
-                          <button type="button" className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors" title="Image">
+                          <button
+                            type="button"
+                            onClick={() => imageInputRef.current?.click()}
+                            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                            title="Image"
+                          >
                             <ImageIcon className="w-4 h-4" />
                           </button>
-                          <button type="button" className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors border-l border-gray-200/80 dark:border-white/10" title="Video">
+                          <button
+                            type="button"
+                            onClick={() => videoInputRef.current?.click()}
+                            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors border-l border-gray-200/80 dark:border-white/10"
+                            title="Video"
+                          >
                             <Video className="w-4 h-4" />
                           </button>
                         </div>
@@ -763,6 +852,22 @@ const AgentLLMPage = () => {
                         </button>
                       </div>
                     </div>
+                    {attachedFiles.length > 0 && (
+                      <div className="px-3 pb-3 flex flex-wrap gap-2">
+                        {attachedFiles.map((file, idx) => (
+                          <button
+                            key={`${file.name}-${file.lastModified}-${idx}`}
+                            type="button"
+                            onClick={() => removeAttachedFile(idx)}
+                            className="inline-flex items-center gap-1.5 max-w-[260px] px-2.5 py-1.5 rounded-full text-xs border border-violet-200/80 dark:border-violet-500/30 bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-200"
+                            title="Click to remove"
+                          >
+                            <span className="truncate">{file.name}</span>
+                            <Square className="w-3 h-3" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -902,17 +1007,37 @@ const AgentLLMPage = () => {
                   </div>
                   <div className="flex items-center justify-between px-3 pb-3 pt-1 border-t border-gray-100 dark:border-white/5">
                     <div className="flex items-center gap-1">
-                      <button type="button" className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors" title="Upload">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                        title="Upload"
+                      >
                         <Upload className="w-4 h-4" />
                       </button>
-                      <button type="button" className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors" title="Attach">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                        title="Attach"
+                      >
                         <Plus className="w-4 h-4" />
                       </button>
                       <div className="flex items-center rounded-lg border border-gray-200/80 dark:border-white/10 overflow-hidden">
-                        <button type="button" className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors" title="Image">
+                        <button
+                          type="button"
+                          onClick={() => imageInputRef.current?.click()}
+                          className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                          title="Image"
+                        >
                           <ImageIcon className="w-4 h-4" />
                         </button>
-                        <button type="button" className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors border-l border-gray-200/80 dark:border-white/10" title="Video">
+                        <button
+                          type="button"
+                          onClick={() => videoInputRef.current?.click()}
+                          className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors border-l border-gray-200/80 dark:border-white/10"
+                          title="Video"
+                        >
                           <Video className="w-4 h-4" />
                         </button>
                       </div>
@@ -978,6 +1103,22 @@ const AgentLLMPage = () => {
                       </button>
                     </div>
                   </div>
+                  {attachedFiles.length > 0 && (
+                    <div className="px-3 pb-3 flex flex-wrap gap-2">
+                      {attachedFiles.map((file, idx) => (
+                        <button
+                          key={`${file.name}-${file.lastModified}-${idx}`}
+                          type="button"
+                          onClick={() => removeAttachedFile(idx)}
+                          className="inline-flex items-center gap-1.5 max-w-[260px] px-2.5 py-1.5 rounded-full text-xs border border-violet-200/80 dark:border-violet-500/30 bg-violet-50 dark:bg-violet-500/10 text-violet-700 dark:text-violet-200"
+                          title="Click to remove"
+                        >
+                          <span className="truncate">{file.name}</span>
+                          <Square className="w-3 h-3" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

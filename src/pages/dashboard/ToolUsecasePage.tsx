@@ -30,13 +30,6 @@ import {
   Users,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 interface Integration {
@@ -45,12 +38,15 @@ interface Integration {
   description: string;
   icon: React.ElementType;
   category: string;
+  kind: "MCP" | "Tool";
   status: "connected" | "available";
   color?: string;
   logoUrl?: string;
 }
 
-const integrations: Integration[] = [
+type IntegrationSeed = Omit<Integration, "kind">;
+
+const integrations: IntegrationSeed[] = [
   {
     id: "slack",
     name: "Slack",
@@ -261,28 +257,42 @@ const integrations: Integration[] = [
   },
 ];
 
-const categoryList = Array.from(new Set(integrations.map((i) => i.category)));
-const categoryOptions = ["All Categories", "Connected", ...categoryList];
+const toolIds = new Set([
+  "slack",
+  "gmail",
+  "google-drive",
+  "google-calendar",
+  "discord",
+  "teams",
+  "trello",
+  "figma",
+  "zapier",
+  "dropbox",
+]);
+
+const integrationsWithKind: Integration[] = integrations.map((item) => ({
+  ...item,
+  kind: toolIds.has(item.id) ? "Tool" : "MCP",
+}));
 
 export default function ToolUsecasePage() {
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All Categories");
+  const [category, setCategory] = useState<"MCP" | "Tool">("MCP");
   const [logoErrors, setLogoErrors] = useState<Record<string, boolean>>({});
 
-  const filtered = integrations.filter((i) => {
+  const filtered = integrationsWithKind.filter((i) => {
     const matchSearch =
       !search ||
       i.name.toLowerCase().includes(search.toLowerCase()) ||
       i.description.toLowerCase().includes(search.toLowerCase()) ||
-      i.category.toLowerCase().includes(search.toLowerCase());
-    if (category === "Connected") return matchSearch && i.status === "connected";
-    if (category === "All Categories") return matchSearch;
-    return matchSearch && i.category === category;
+      i.category.toLowerCase().includes(search.toLowerCase()) ||
+      i.kind.toLowerCase().includes(search.toLowerCase());
+    return matchSearch && i.kind === category;
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#05070d] dark:text-white transition-colors duration-300">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Header: title + subtitle left; search + category right */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -291,12 +301,12 @@ export default function ToolUsecasePage() {
         >
           <div className="shrink-0">
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              <span className="text-foreground">MCP </span>
-              <span className="bg-gradient-to-r from-blue-500 via-cyan-500 to-purple-500 bg-clip-text text-transparent">
+              <span className="text-slate-900 dark:text-white">MCP </span>
+              <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
                 Integrations
               </span>
             </h1>
-            <p className="text-muted-foreground mt-1.5 text-sm sm:text-base">
+            <p className="text-slate-600 dark:text-slate-400 mt-1.5 text-sm sm:text-base">
               Connect your tools and automate your workflows
             </p>
           </div>
@@ -304,14 +314,14 @@ export default function ToolUsecasePage() {
             <div
               className={cn(
                 "relative flex-1 min-w-0 rounded-2xl transition-all duration-200",
-                "bg-white dark:bg-white/5",
-                "border border-slate-200/80 dark:border-border",
-                "shadow-sm hover:shadow-md dark:shadow-none",
-                "focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/40 dark:focus-within:border-primary/30"
+                "bg-white dark:bg-[#0b0f18]",
+                "border border-slate-200 dark:border-white/10",
+                "shadow-sm dark:shadow-[0_10px_24px_rgba(0,0,0,0.35)] hover:border-slate-300 dark:hover:border-white/20",
+                "focus-within:ring-2 focus-within:ring-indigo-500/25 focus-within:border-indigo-400/50"
               )}
             >
               <Search
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-muted-foreground pointer-events-none"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-slate-500 pointer-events-none"
                 strokeWidth={2}
               />
               <input
@@ -321,30 +331,28 @@ export default function ToolUsecasePage() {
                 onChange={(e) => setSearch(e.target.value)}
                 className={cn(
                   "w-full h-12 pl-12 pr-5 rounded-2xl text-sm bg-transparent border-0",
-                  "placeholder:text-muted-foreground text-foreground",
+                  "placeholder:text-slate-500 text-slate-900 dark:text-white",
                   "focus:outline-none focus:ring-0"
                 )}
               />
             </div>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger
-                className={cn(
-                  "h-12 w-full sm:w-[180px] shrink-0 rounded-2xl text-sm font-medium",
-                  "bg-white dark:bg-white/5 border border-slate-200/80 dark:border-border",
-                  "shadow-sm hover:shadow-md dark:shadow-none text-foreground",
-                  "focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
-                )}
-              >
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                {categoryOptions.map((opt) => (
-                  <SelectItem key={opt} value={opt}>
-                    {opt}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex w-full sm:w-auto items-center gap-2 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0b0f18] p-1.5 shadow-sm dark:shadow-[0_10px_24px_rgba(0,0,0,0.35)]">
+              {(["MCP", "Tool"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setCategory(tab)}
+                  className={cn(
+                    "h-9 min-w-[88px] rounded-xl px-4 text-sm font-semibold transition-all",
+                    category === tab
+                      ? "bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-[0_8px_18px_rgba(79,70,229,0.32)]"
+                      : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10"
+                  )}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
           </div>
         </motion.div>
 
@@ -353,7 +361,7 @@ export default function ToolUsecasePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.05 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-4.5"
         >
           {filtered.map((integration, index) => {
             const Icon = integration.icon;
@@ -368,20 +376,20 @@ export default function ToolUsecasePage() {
               >
                 <Card
                   className={cn(
-                    "h-full overflow-hidden rounded-2xl transition-all duration-200 group",
-                    "border border-border bg-card text-card-foreground",
-                    "hover:shadow-lg hover:border-muted-foreground/20 dark:hover:bg-white/[0.06]"
+                    "h-[208px] overflow-hidden rounded-xl transition-all duration-200 group flex flex-col",
+                    "border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111722] text-slate-900 dark:text-white",
+                    "shadow-sm dark:shadow-[0_8px_20px_rgba(0,0,0,0.45)] hover:-translate-y-0.5 hover:border-indigo-300 dark:hover:border-indigo-400/45 hover:shadow-[0_10px_24px_rgba(79,70,229,0.14)] dark:hover:shadow-[0_14px_30px_rgba(37,99,235,0.22)]"
                   )}
                 >
-                  <CardHeader className="pb-2 pt-5 px-5">
+                  <CardHeader className="pb-2 pt-4 px-4">
                     <div className="flex items-start gap-4">
                       <div
                         className={cn(
-                          "flex items-center justify-center w-14 h-14 rounded-xl shrink-0 overflow-hidden",
-                          "ring-1 ring-border/80",
+                          "flex items-center justify-center w-11 h-11 rounded-lg shrink-0 overflow-hidden",
+                          "ring-1 ring-slate-200 dark:ring-white/15",
                           useLogo
-                            ? "bg-white dark:bg-white"
-                            : "bg-muted/50 dark:bg-white/5",
+                            ? "bg-white"
+                            : "bg-slate-100 dark:bg-slate-800",
                           !useLogo && (integration.color || "bg-primary")
                         )}
                       >
@@ -389,7 +397,7 @@ export default function ToolUsecasePage() {
                           <img
                             src={integration.logoUrl}
                             alt=""
-                            className="w-8 h-8 object-contain"
+                            className="w-7 h-7 object-contain"
                             loading="lazy"
                             onError={() =>
                               setLogoErrors((prev) => ({ ...prev, [integration.id]: true }))
@@ -397,26 +405,42 @@ export default function ToolUsecasePage() {
                           />
                         ) : (
                           <span className="flex items-center justify-center w-full h-full text-white">
-                            <Icon className="w-7 h-7" />
+                            <Icon className="w-6 h-6" />
                           </span>
                         )}
                       </div>
                       <div className="min-w-0 flex-1 pt-0.5">
-                        <h3 className="text-base font-semibold text-foreground truncate">
-                          {integration.name}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="text-[15px] font-semibold text-slate-900 dark:text-white truncate leading-tight">
+                            {integration.name}
+                          </h3>
+                          <span
+                            className={cn(
+                              "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+                              isConnected
+                                ? "bg-emerald-500/15 text-emerald-700 border border-emerald-400/40 dark:text-emerald-300 dark:border-emerald-400/30"
+                                : "bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-500/15 dark:text-slate-300 dark:border-white/15"
+                            )}
+                          >
+                            {isConnected ? "Connected" : "Available"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">
                           {integration.description}
+                        </p>
+                        <p className="text-[11px] text-slate-500 mt-2 font-medium">
+                          {integration.category}
                         </p>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="px-5 pb-5 pt-0 flex items-center gap-2">
+                  <CardContent className="px-4 pb-4 pt-1 mt-auto">
                     {isConnected ? (
-                      <>
+                      <div className="flex items-center gap-2">
                         <button
                           className={cn(
-                            "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors border border-border bg-muted/40 dark:bg-white/5 text-foreground hover:bg-muted/60 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+                            "flex-[1.15] inline-flex items-center justify-center gap-2 h-10 px-3 rounded-lg text-sm font-medium transition-colors border",
+                            "border-slate-300 bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-300 dark:border-white/15 dark:bg-[#262b34] dark:text-slate-200 dark:hover:bg-[#2b313d] dark:focus:ring-white/15"
                           )}
                         >
                           <Eye className="w-4 h-4 shrink-0" />
@@ -424,22 +448,22 @@ export default function ToolUsecasePage() {
                         </button>
                         <button
                           className={cn(
-                            "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
-                            "border border-destructive/40 text-destructive bg-destructive/5",
-                            "hover:bg-destructive/10 focus:outline-none focus:ring-2 focus:ring-destructive/20 focus:ring-offset-2 focus:ring-offset-background"
+                            "flex-1 inline-flex items-center justify-center gap-2 h-10 px-3 rounded-lg text-sm font-medium transition-colors",
+                            "border border-red-400/35 text-red-600 dark:text-red-300 bg-red-500/10",
+                            "hover:bg-red-500/15 focus:outline-none focus:ring-2 focus:ring-red-400/25"
                           )}
                         >
                           <Unplug className="w-4 h-4 shrink-0" />
                           Disconnect
                         </button>
-                      </>
+                      </div>
                     ) : (
-                      <>
+                      <div className="flex items-center gap-2">
                         <button
                           className={cn(
-                            "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-all",
-                            "bg-primary text-primary-foreground shadow-sm",
-                            "hover:bg-primary/90 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background"
+                            "flex-[1.1] inline-flex items-center justify-center gap-2 h-10 px-3 rounded-lg text-sm font-semibold transition-all",
+                            "bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-[0_8px_18px_rgba(79,70,229,0.38)]",
+                            "hover:from-indigo-400 hover:to-blue-400 focus:outline-none focus:ring-2 focus:ring-indigo-400/35"
                           )}
                         >
                           <Link2 className="w-4 h-4 shrink-0" />
@@ -447,15 +471,15 @@ export default function ToolUsecasePage() {
                         </button>
                         <button
                           className={cn(
-                            "flex-1 inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-medium transition-colors",
-                            "border border-border bg-muted/30 dark:bg-white/5 text-foreground",
-                            "hover:bg-muted/50 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+                            "flex-1 inline-flex items-center justify-center gap-2 h-10 px-3 rounded-lg text-sm font-medium transition-colors",
+                            "border border-slate-300 bg-slate-100 text-slate-700 dark:border-white/15 dark:bg-[#262b34] dark:text-slate-100",
+                            "hover:bg-slate-200 dark:hover:bg-[#2b313d] focus:outline-none focus:ring-2 focus:ring-slate-300 dark:focus:ring-white/15"
                           )}
                         >
                           View
                           <ArrowRight className="w-4 h-4 shrink-0" />
                         </button>
-                      </>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
@@ -470,14 +494,14 @@ export default function ToolUsecasePage() {
             animate={{ opacity: 1 }}
             className={cn(
               "flex flex-col items-center justify-center py-20 px-6 rounded-2xl",
-              "border border-dashed border-border bg-muted/30 dark:bg-white/[0.02]"
+              "border border-dashed border-slate-300 dark:border-white/15 bg-slate-100/70 dark:bg-white/[0.02]"
             )}
           >
-            <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-4">
-              <Plug className="w-7 h-7 text-muted-foreground" />
+            <div className="w-14 h-14 rounded-2xl bg-slate-200 dark:bg-white/5 flex items-center justify-center mb-4">
+              <Plug className="w-7 h-7 text-slate-500 dark:text-slate-400" />
             </div>
-            <p className="text-sm font-medium text-foreground">No integrations match</p>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm font-medium text-slate-900 dark:text-white">No integrations match</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
               Try a different search or category.
             </p>
           </motion.div>
