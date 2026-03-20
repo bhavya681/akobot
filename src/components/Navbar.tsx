@@ -216,8 +216,8 @@ const navLinks = [
                         alt="AKOBOT.ai Logo" 
                         animate={{
                           opacity: 1,
-                          scale: (isExpanded || isOpen) ? 1.5 : 1.3, 
-                          x: (isExpanded || isOpen) ? 1 : 0,
+                          scale: 1.3, 
+                          x: 1
                         }}
                         className="absolute left-0 h-auto w-full max-w-[130px] origin-left object-contain" 
                       />
