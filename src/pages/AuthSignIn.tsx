@@ -267,7 +267,7 @@ const AuthSignIn = () => {
             {showForgotPassword 
               ? "We'll send a link to your email." 
               : isSignUp 
-                ? "Join AKO Creative Suite today" 
+                ? "Join akobot.ai today" 
                 : "Sign in to continue to your dashboard"}
           </p>
         </motion.div>
@@ -539,7 +539,7 @@ const AuthSignIn = () => {
       >
         <motion.img 
           src={showcaseImages[currentImageIndex]} 
-          alt="AKO Showcase"
+          alt="AKOBOT Showcase"
           className="w-full h-full object-cover object-center"
           initial={{ scale: 1 }}
           animate={{ scale: 1.1 }}

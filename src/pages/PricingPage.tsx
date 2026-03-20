@@ -225,7 +225,7 @@ const PricingPage = () => {
         amount: data.amount,
         currency: data.currency,
         order_id: data.orderId,
-        name: "AEKO.AI",
+        name: "AKOBOT.AI",
         description: `Custom Top-up — $${data.amountInUsd} (${(data.credits ?? 0).toLocaleString()} credits)`,
         prefill: {
           name: currentUser?.username || currentUser?.name || "",
@@ -397,7 +397,7 @@ const PricingPage = () => {
         amount: orderData.amount,
         currency: orderData.currency || "INR",
         order_id: orderData.orderId,
-        name: "AEKO.AI",
+        name: "AKOBOT.AI",
         description: `Purchase ${pkg.name}`,
         image: "/logo.webp",
         handler: async (response: any) => {
@@ -1037,7 +1037,7 @@ const PricingPage = () => {
           <div className="border-t border-border dark:border-violet-400/10 bg-muted/20 dark:bg-black/30">
             <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
               <p className="text-xs text-muted-foreground">
-                © {new Date().getFullYear()} AEKO.AI. All rights reserved.
+                © {new Date().getFullYear()} AKOBOT.AI. All rights reserved.
               </p>
               <div className="flex items-center gap-6">
                 <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">

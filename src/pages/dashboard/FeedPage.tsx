@@ -462,7 +462,7 @@ const FeedPage = () => {
             >
               <motion.img 
                 src="/logo.png" 
-                alt="AKO.ai Logo" 
+                alt="AKOBOT.ai Logo" 
                 className="h-auto w-full max-w-[120px] object-contain"
                 animate={{
                   filter: [

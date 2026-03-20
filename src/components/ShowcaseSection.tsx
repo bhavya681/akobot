@@ -207,7 +207,7 @@ const ShowcaseSection = () => {
             </div>
 
             <p className="text-lg text-muted-foreground dark:text-white/80 leading-relaxed mb-8">
-              Join thousands of creators, designers, and developers who are using AEKO to bring their creative visions to life. 
+              Join thousands of creators, designers, and developers who are using AKOBOT.AI to bring their creative visions to life. 
               Generate stunning images, create amazing videos, and build powerful AI agents—all in one platform.
             </p>
 

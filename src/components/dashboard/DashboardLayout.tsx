@@ -127,7 +127,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <p>AEKO.AI</p>
+                  <p>AKOBOT.AI</p>
                 </TooltipContent>
               </Tooltip>
               <button

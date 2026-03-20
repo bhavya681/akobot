@@ -98,7 +98,7 @@ const AskMeAnythingSection = () => {
 
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Sparkles className="w-3 h-3" />
-                <span>Powered by AEKO</span>
+                <span>Powered by AKOBOT.AI</span>
               </div>
             </div>
 

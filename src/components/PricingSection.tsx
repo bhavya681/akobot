@@ -251,7 +251,7 @@ const PricingSection = () => {
         amount: orderData.amount,
         currency: orderData.currency || "INR",
         order_id: orderData.orderId,
-        name: "AEKO.AI",
+        name: "AKOBOT.AI",
         description: `Purchase ${planName}`,
         image: "/logo.webp", // Optional: Add your logo
         handler: async (response: any) => {

@@ -619,10 +619,10 @@ const AgentLLMPage = () => {
               className="flex items-center gap-2.5 rounded-lg py-1.5 pr-2 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors"
             >
               <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 dark:bg-white/10 flex items-center justify-center shrink-0">
-                <img src="/logo.webp" alt="AEKO" className="w-5 h-5 object-contain" />
+                <img src="/logo.webp" alt="AKOBOT" className="w-5 h-5 object-contain" />
               </div>
               <span className="text-base font-semibold text-gray-900 dark:text-white tracking-tight">
-                AEKO<span className="text-violet-600 dark:text-violet-400">.AI</span>
+                AKOBOT<span className="text-violet-600 dark:text-violet-400">.AI</span>
               </span>
             </button>
             <div className="flex items-center gap-2">
@@ -893,7 +893,7 @@ const AgentLLMPage = () => {
                     <div className={`flex flex-col max-w-[88%] sm:max-w-[82%] ${message.role === "user" ? "items-end" : "items-start"}`}>
                       <div className="flex items-center gap-2 mb-1.5 px-0.5">
                         <span className="text-xs font-medium text-gray-500 dark:text-gray-500">
-                          {message.role === "assistant" ? "AEKO" : "You"}
+                          {message.role === "assistant" ? "AKOBOT" : "You"}
                         </span>
                         <span className="text-[11px] text-gray-400 dark:text-gray-600">{formatTime(message.timestamp)}</span>
                         {message.role === "assistant" && message.responseTime && (
@@ -989,7 +989,7 @@ const AgentLLMPage = () => {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder={hasMessages ? "Message AEKO..." : "Ask anything..."}
+                      placeholder={hasMessages ? "Message AKOBOT..." : "Ask anything..."}
                       rows={1}
                       className="flex-1 min-w-0 bg-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none resize-none overflow-y-auto text-[15px] leading-relaxed py-2 min-h-[24px] max-h-[180px] transition-colors"
                     />

@@ -70,7 +70,7 @@ const EveryCreatorSection = () => {
             Built for <span className="gradient-text">Every Creator</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Developers, designers, storytellers, marketers — AEKO empowers everyone to create with AI.
+            Developers, designers, storytellers, marketers — AKOBOT empowers everyone to create with AI.
           </p>
         </motion.div>
 

@@ -394,7 +394,7 @@ const { choices } = await response.json();`
           className="max-w-6xl mx-auto"
         >
           <h3 className="text-2xl md:text-3xl font-extrabold text-foreground dark:text-white text-center mb-8">
-            Why Developers Choose AEKO
+            Why Developers Choose AKOBOT.AI
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">

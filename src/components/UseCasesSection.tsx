@@ -63,7 +63,7 @@ const UseCasesSection = () => {
             Built for <span className="gradient-text">Every Creator</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            From content creators to marketers, AEKO powers visual creation
+            From content creators to marketers, AKOBOT powers visual creation
           </p>
         </motion.div>
 

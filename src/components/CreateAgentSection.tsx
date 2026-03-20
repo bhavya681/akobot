@@ -327,7 +327,7 @@ const CreateAgentSection = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-8">
                 <h3 className="text-5xl md:text-6xl font-bold text-foreground leading-tight tracking-tight">Automate 80%+ of interactions with AI agents</h3>
-                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">AEKO AI agents resolve complex issues on any channel. Powered by agentic AI, they reason, adapt, and act independently – delighting customers and employees while reducing costs at scale.</p>
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">AKOBOT AI agents resolve complex issues on any channel. Powered by agentic AI, they reason, adapt, and act independently – delighting customers and employees while reducing costs at scale.</p>
                 <div className="flex flex-wrap gap-4">
                   <Button variant="default" size="lg" className="bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-6 text-base rounded-xl shadow-lg">Contact Sales</Button>
                 </div>

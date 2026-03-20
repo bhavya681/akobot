@@ -32,7 +32,7 @@ const Logo = ({ size = "md", showText = false, className = "", href = "/" }: Log
           <div className="relative w-full h-full flex items-center justify-center">
             <img
               src="/logo.webp"
-              alt="AEKO"
+              alt="AKOBOT"
               className="w-full h-full object-contain scale-150 drop-shadow-xl"
             />
           </div>
@@ -41,7 +41,7 @@ const Logo = ({ size = "md", showText = false, className = "", href = "/" }: Log
         {showText && (
           <div className="flex flex-col leading-tight">
             <span className="text-xl md:text-2xl font-black tracking-tighter text-foreground">
-              AEKO.
+              AKOBOT. 
               <motion.span
                 style={{
                   background: 'linear-gradient(135deg, #7C3AED, #3B82F6, #22D3EE, #EC4899)',
@@ -52,7 +52,7 @@ const Logo = ({ size = "md", showText = false, className = "", href = "/" }: Log
                 animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
                 transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
               >
-                AI
+                 AI
               </motion.span>
             </span>
           </div>

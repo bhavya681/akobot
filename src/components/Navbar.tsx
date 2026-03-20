@@ -217,7 +217,7 @@ const Navbar = () => {
                       <motion.img 
                         key={theme}
                         src="/ako_dark.png"
-                        alt="AKO.ai Logo" 
+                        alt="AKOBOT.ai Logo" 
                         animate={{
                           opacity: 1,
                           scale: (isExpanded || isOpen) ? 1.5 : 1.3, 

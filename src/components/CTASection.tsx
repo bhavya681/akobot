@@ -40,13 +40,13 @@ const CTASection = () => {
           {/* Subtext */}
           <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
             Join thousands of creators, designers, and developers building with
-            AEKO's powerful AI platform.
+            AKOBOT's powerful AI platform.
           </p>
 
           {/* CTA */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button variant="hero" size="xl" className="group">
-              Launch AEKO
+              Launch AKOBOT.AI
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>

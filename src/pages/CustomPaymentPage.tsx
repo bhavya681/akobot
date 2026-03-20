@@ -120,7 +120,7 @@ const CustomPaymentPage = () => {
         amount: data.amount,
         currency: data.currency,
         order_id: data.orderId,
-        name: "AEKO.AI",
+        name: "AKOBOT.AI",
         description: `Custom Top-up — $${data.amountInUsd} (${(data.credits ?? 0).toLocaleString()} credits)`,
         prefill: {
           name: currentUser?.username || currentUser?.name || "",

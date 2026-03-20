@@ -10,7 +10,7 @@ const aiTools = [
     id: "text2video",
     name: "Text to Video AI",
     icon: Video,
-    description: "AEKO AI text to video generator brings your prompts to life with best-in-class visuals and perfectly synchronized audio.",
+    description: "AKOBOT AI text to video generator brings your prompts to life with best-in-class visuals and perfectly synchronized audio.",
     placeholder: "On Mars, a spacecraft is taking off",
     gradient: "from-purple-500 via-pink-500 to-orange-500",
     route: "/dashboard/tools/video",
@@ -146,7 +146,7 @@ const AIToolsSection = () => {
                       </button>
                     </div>
                     <p className="text-sm text-muted-foreground/60 mt-3 text-center">
-                      Powered by AEKO
+                      Powered by AKOBOT.AI
                     </p>
                   </div>
                 </div>

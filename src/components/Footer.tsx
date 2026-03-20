@@ -215,7 +215,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border/50 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} AEKO. All rights reserved.
+            © {new Date().getFullYear()} AKOBOT. All rights reserved.
           </div>
           <div className="flex items-center gap-6">
             <Link

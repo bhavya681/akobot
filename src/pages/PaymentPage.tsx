@@ -107,7 +107,7 @@ const PaymentPage = () => {
           amount: orderData.amount,
           currency: orderData.currency || "INR",
           order_id: orderData.orderId,
-          name: "AEKO.AI",
+          name: "AKOBOT.AI",
           description: `Purchase ${packageData?.name || "package"}`,
           handler: async (response: any) => {
             try {

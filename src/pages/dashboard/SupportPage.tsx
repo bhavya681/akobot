@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     question: "Is there an API available?",
-    answer: "Yes! Standard and Pro plans include API access. You can generate an API key from your Account settings and integrate AEKO into your applications.",
+    answer: "Yes! Standard and Pro plans include API access. You can generate an API key from your Account settings and integrate AKOBOT into your applications.",
   },
 ];
 
@@ -102,7 +102,7 @@ const SupportPage = () => {
         >
           <motion.img 
             src="/logo.webp" 
-            alt="AKO.ai Logo" 
+            alt="AKOBOT.ai Logo" 
             className="h-auto w-full max-w-[160px] object-contain"
             animate={{
               filter: [
