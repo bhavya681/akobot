@@ -82,32 +82,47 @@ function formatTime(date: Date) {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
+function extractAsyncJobId(payload: Record<string, unknown>): string | null {
+  const v =
+    payload.jobId ??
+    payload.job_id ??
+    payload.analyticsJobId ??
+    payload.analytics_job_id ??
+    null;
+  return typeof v === "string" && v.trim().length > 0 ? v : null;
+}
+
 function AnimatedChatBackground() {
   return (
     <>
-      {/* Base gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#E0E7FF] via-[#E8ECFF] to-[#C7D2FE] dark:from-[#1e1e3f] dark:via-[#1a1a2e] dark:to-[#16213e]" />
+      {/* Layered gradient base (light/dark adaptive) */}
+      <div className="absolute inset-0 akko-bg-base" />
 
-      {/* Animated aurora blobs */}
+      {/* Moving mesh lights */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
+        <div className="akko-mesh akko-mesh--a" />
+        <div className="akko-mesh akko-mesh--b" />
+        <div className="akko-mesh akko-mesh--c" />
         <div className="akko-aurora akko-aurora--a" />
         <div className="akko-aurora akko-aurora--b" />
         <div className="akko-aurora akko-aurora--c" />
       </div>
 
-      {/* Center spotlight that gently breathes behind the card */}
+      {/* Center spotlight */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden>
         <div className="akko-spot" />
       </div>
 
-      {/* Subtle drifting dots/noise */}
+      {/* Edge vignette + subtle grain */}
+      <div className="absolute inset-0 pointer-events-none akko-vignette" aria-hidden />
       <div
-        className="absolute inset-0 pointer-events-none akko-dots opacity-[0.55] dark:opacity-[0.35]"
+        className="absolute inset-0 pointer-events-none akko-dots opacity-[0.45] dark:opacity-[0.3]"
         aria-hidden
       />
 
       <style jsx global>{`
         @media (prefers-reduced-motion: reduce) {
+          .akko-mesh,
           .akko-aurora,
           .akko-dots {
             animation: none !important;
@@ -115,38 +130,86 @@ function AnimatedChatBackground() {
           }
         }
 
+        .akko-bg-base {
+          background:
+            radial-gradient(circle at 15% 15%, rgba(129, 140, 248, 0.28), transparent 45%),
+            radial-gradient(circle at 85% 20%, rgba(14, 165, 233, 0.2), transparent 42%),
+            radial-gradient(circle at 75% 80%, rgba(236, 72, 153, 0.16), transparent 45%),
+            linear-gradient(170deg, #eef2ff 0%, #e8ecff 42%, #dbeafe 100%);
+        }
+        :is(.dark *) .akko-bg-base {
+          background:
+            radial-gradient(circle at 18% 16%, rgba(129, 140, 248, 0.18), transparent 42%),
+            radial-gradient(circle at 80% 12%, rgba(56, 189, 248, 0.14), transparent 40%),
+            radial-gradient(circle at 70% 84%, rgba(217, 70, 239, 0.12), transparent 46%),
+            linear-gradient(170deg, #0f1226 0%, #121632 48%, #101726 100%);
+        }
+
+        .akko-mesh {
+          position: absolute;
+          width: 54vmax;
+          height: 54vmax;
+          border-radius: 9999px;
+          opacity: 0.32;
+          filter: blur(58px);
+          will-change: transform;
+          mix-blend-mode: soft-light;
+        }
+        :is(.dark *) .akko-mesh {
+          opacity: 0.22;
+          mix-blend-mode: screen;
+        }
+        .akko-mesh--a {
+          left: -20vmax;
+          top: -16vmax;
+          background: radial-gradient(closest-side, rgba(45, 212, 191, 0.7), transparent 70%);
+          animation: akkoMeshA 20s ease-in-out infinite;
+        }
+        .akko-mesh--b {
+          right: -18vmax;
+          top: 4vmax;
+          background: radial-gradient(closest-side, rgba(96, 165, 250, 0.72), transparent 72%);
+          animation: akkoMeshB 24s ease-in-out infinite;
+        }
+        .akko-mesh--c {
+          left: 18vmax;
+          bottom: -24vmax;
+          background: radial-gradient(closest-side, rgba(244, 114, 182, 0.62), transparent 72%);
+          animation: akkoMeshC 28s ease-in-out infinite;
+        }
+
         .akko-spot {
-          width: min(520px, 80vw);
-          height: min(520px, 80vw);
+          width: min(640px, 86vw);
+          height: min(640px, 86vw);
           border-radius: 9999px;
           background:
-            radial-gradient(circle at 30% 0%, rgba(236, 72, 153, 0.1), transparent 55%),
-            radial-gradient(circle at 70% 100%, rgba(56, 189, 248, 0.12), transparent 55%),
-            radial-gradient(circle at 50% 40%, rgba(129, 140, 248, 0.35), transparent 68%);
-          filter: blur(22px);
-          opacity: 0.85;
+            radial-gradient(circle at 30% 8%, rgba(236, 72, 153, 0.16), transparent 56%),
+            radial-gradient(circle at 70% 90%, rgba(56, 189, 248, 0.22), transparent 54%),
+            radial-gradient(circle at 50% 40%, rgba(99, 102, 241, 0.4), transparent 70%);
+          filter: blur(26px);
+          opacity: 0.86;
           mix-blend-mode: soft-light;
-          animation: akkoSpotPulse 16s ease-in-out infinite alternate;
+          animation: akkoSpotPulse 18s ease-in-out infinite alternate;
           transform-origin: center;
         }
         :is(.dark *) .akko-spot {
-          opacity: 0.55;
-          filter: blur(26px);
+          opacity: 0.6;
+          filter: blur(32px);
           mix-blend-mode: screen;
         }
 
         .akko-aurora {
           position: absolute;
-          width: 60vmax;
-          height: 60vmax;
+          width: 64vmax;
+          height: 64vmax;
           border-radius: 9999px;
-          filter: blur(40px);
-          opacity: 0.55;
+          filter: blur(46px);
+          opacity: 0.48;
           mix-blend-mode: multiply;
           will-change: transform;
         }
         :is(.dark *) .akko-aurora {
-          opacity: 0.38;
+          opacity: 0.34;
           mix-blend-mode: screen;
         }
 
@@ -182,6 +245,31 @@ function AnimatedChatBackground() {
             transparent 70%
           );
           animation: akkoAuroraC 20s ease-in-out infinite;
+        }
+
+        .akko-vignette {
+          background:
+            radial-gradient(circle at 50% 40%, transparent 42%, rgba(15, 23, 42, 0.08) 100%);
+        }
+        :is(.dark *) .akko-vignette {
+          background:
+            radial-gradient(circle at 50% 40%, transparent 34%, rgba(2, 6, 23, 0.4) 100%);
+        }
+
+        @keyframes akkoMeshA {
+          0% { transform: translate3d(0, 0, 0) scale(1); }
+          50% { transform: translate3d(12vmax, 4vmax, 0) scale(1.06); }
+          100% { transform: translate3d(0, 0, 0) scale(1); }
+        }
+        @keyframes akkoMeshB {
+          0% { transform: translate3d(0, 0, 0) scale(1); }
+          50% { transform: translate3d(-10vmax, 9vmax, 0) scale(1.08); }
+          100% { transform: translate3d(0, 0, 0) scale(1); }
+        }
+        @keyframes akkoMeshC {
+          0% { transform: translate3d(0, 0, 0) scale(1); }
+          50% { transform: translate3d(-6vmax, -12vmax, 0) scale(1.07); }
+          100% { transform: translate3d(0, 0, 0) scale(1); }
         }
 
         @keyframes akkoSpotPulse {
@@ -241,15 +329,15 @@ function AnimatedChatBackground() {
 
         .akko-dots {
           background-image:
-            radial-gradient(rgba(255, 255, 255, 0.9) 1px, transparent 1px),
-            radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-          background-size: 22px 22px, 34px 34px;
+            radial-gradient(rgba(255, 255, 255, 0.72) 1px, transparent 1px),
+            radial-gradient(rgba(30, 41, 59, 0.05) 1px, transparent 1px);
+          background-size: 20px 20px, 36px 36px;
           background-position: 0 0, 10px 18px;
-          animation: akkoDotsDrift 26s linear infinite;
+          animation: akkoDotsDrift 34s linear infinite;
         }
         :is(.dark *) .akko-dots {
           background-image:
-            radial-gradient(rgba(255, 255, 255, 0.22) 1px, transparent 1px),
+            radial-gradient(rgba(148, 163, 184, 0.24) 1px, transparent 1px),
             radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
         }
 
@@ -294,6 +382,15 @@ export default function AgentChatPage() {
   const audioChunksRef = useRef<Blob[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const playingAudioRef = useRef<HTMLAudioElement | null>(null);
+  const analyticsPollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (analyticsPollTimerRef.current) {
+        clearTimeout(analyticsPollTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!agentId) return;
@@ -377,6 +474,7 @@ export default function AgentChatPage() {
 
     try {
       let fullContent = "";
+      let analyticsJobId: string | null = null;
       await customAgentAPI.chatStream(agentId, {
         query: text || "Please analyze the attached files/images.",
         session_id: sessionIdRef.current,
@@ -391,16 +489,67 @@ export default function AgentChatPage() {
             )
           );
         },
+        onJson: (payload) => {
+          const jobId = extractAsyncJobId(payload);
+          if (jobId) analyticsJobId = jobId;
+        },
         onDone: () => {
-          setSending(false);
           setStreamingMsgId(null);
         },
         onError: (e) => {
-          setSending(false);
           setStreamingMsgId(null);
           toast.error("Stream error", { description: e.message });
         },
       });
+
+      if (analyticsJobId) {
+        let attempts = 0;
+        let completed = false;
+        while (!completed && attempts < 60) {
+          attempts += 1;
+          const progress = await customAgentAPI.getAnalyticsProgress(agentId, analyticsJobId);
+          const statusText = String(progress.status ?? "processing").toLowerCase();
+          const resultText =
+            (progress.response as string | undefined) ??
+            (progress.answer as string | undefined) ??
+            (progress.result as string | undefined) ??
+            (progress.output as string | undefined) ??
+            (progress.text as string | undefined) ??
+            (progress.message as string | undefined) ??
+            "";
+          const pct = typeof progress.progress === "number" ? Math.max(0, Math.min(100, Math.round(progress.progress))) : undefined;
+
+          if (/(failed|error|cancelled)/i.test(statusText)) {
+            throw new Error(resultText || "Analytics job failed");
+          }
+
+          if (/(completed|complete|done|success|succeeded|finished)/i.test(statusText)) {
+            completed = true;
+            const finalText = resultText || "Analytics job completed.";
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantPlaceholder.id ? { ...m, content: finalText } : m
+              )
+            );
+            break;
+          }
+
+          const waitingText = `Running analytics${pct !== undefined ? ` (${pct}%)` : ""}...`;
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantPlaceholder.id ? { ...m, content: waitingText } : m
+            )
+          );
+
+          await new Promise<void>((resolve) => {
+            analyticsPollTimerRef.current = setTimeout(() => resolve(), 2000);
+          });
+        }
+
+        if (!completed) {
+          throw new Error("Analytics job timed out");
+        }
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to send message";
       setMessages((prev) =>
@@ -417,6 +566,9 @@ export default function AgentChatPage() {
       } else if (isSessionErr) {
         router.push("/auth/sign-in");
       }
+    } finally {
+      setSending(false);
+      setStreamingMsgId(null);
     }
   };
 

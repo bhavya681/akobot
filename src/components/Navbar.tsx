@@ -49,26 +49,26 @@ const Navbar = () => {
   }, [isOpen]);
 
   const agenticToolsItems = [
-  { name: "TicketPilot", description: "Smart AI Ticketing Agent", icon: Ticket },
-  { name: "SEO SearchBoost", description: "Advanced SEO Engine", icon: Search },
-  { name: "Analytica AI", description: "Data Analytics AI", icon: BarChart3 },
-  { name: "MeetingPilot", description: "Automatic Meeting MoM Generator", icon: Presentation },
-  { name: "MailBlaster", description: "Bulk Email Automation", icon: Mail },
-  { name: "TaskPing", description: "Smart Reminder System", icon: BellRing },
+  { name: "TicketPilot", description: "Smart AI Ticketing Agent", icon: Ticket, path: "/dashboard/tool-usecase" },
+  { name: "SEO SearchBoost", description: "Advanced SEO Engine", icon: Search, path: "/dashboard/feed" },
+  { name: "Analytica AI", description: "Data Analytics AI", icon: BarChart3, path: "/dashboard/feed" },
+  { name: "MeetingPilot", description: "Automatic Meeting MoM Generator", icon: Presentation, path: "/dashboard/feed" },
+  { name: "MailBlaster", description: "Bulk Email Automation", icon: Mail, path: "/dashboard/feed" },
+  { name: "TaskPing", description: "Smart Reminder System", icon: BellRing, path: "/dashboard/feed" },
 ];
 
 const industryItems = [
-  { name: "SaaS & Tech Companies", description: "Support tickets, product analytics, meeting notes & bulk emails", icon: Monitor, path: "#" },
-  { name: "E-Commerce", description: "Customer tickets, SEO, sales analytics & campaign emails", icon: ShoppingCart, path: "#" },
-  { name: "Finance & FinTech", description: "Query tickets, secure meeting notes, analytics & payment reminders", icon: Landmark, path: "#" },
-  { name: "Education & EdTech", description: "Student support, faculty meeting notes, announcements & reminders", icon: GraduationCap, path: "#" },
-  { name: "Healthcare", description: "Patient handling, secure notes, and automated reminders", icon: Heart, path: "#" },
-  { name: "Enterprises & Corporate", description: "Scale AI agents across your entire organization", icon: Building2, path: "#" },
+  { name: "SaaS & Tech Companies", description: "Support tickets, product analytics, meeting notes & bulk emails", icon: Monitor, path: "/industries" },
+  { name: "E-Commerce", description: "Customer tickets, SEO, sales analytics & campaign emails", icon: ShoppingCart, path: "/industries" },
+  { name: "Finance & FinTech", description: "Query tickets, secure meeting notes, analytics & payment reminders", icon: Landmark, path: "/industries" },
+  { name: "Education & EdTech", description: "Student support, faculty meeting notes, announcements & reminders", icon: GraduationCap, path: "/industries" },
+  { name: "Healthcare", description: "Patient handling, secure notes, and automated reminders", icon: Heart, path: "/industries" },
+  { name: "Enterprises & Corporate", description: "Scale AI agents across your entire organization", icon: Building2, path: "/industries" },
 ];
 
 const learnItems = [
   { name: "Blog", description: "Stay updated with latest AI news", icon: MessageSquare, path: "/blog" },
-  { name: "Documentation", description: "Technical guides and API refs", icon: Film, path: "/docs" },
+  { name: "Documentation", description: "Technical guides and API refs", icon: Film, path: "/documentation" },
 ];
 
 const navLinks = [
@@ -83,10 +83,10 @@ const navLinks = [
       description: "Build and customize AI agents",
     },
     {
-      name: "ToolCase",
+      name: "Integrations",
       icon: Plug,
-      path: "/dashboard/tools",
-      description: "Integrate with your favorite tools",
+      path: "/dashboard/tool-usecase",
+      description: "Connect MCPs and external tools",
     },
     {
       name: "Image Generation",
@@ -94,23 +94,17 @@ const navLinks = [
       path: "/dashboard/tools-old/image",
       description: "Create images with AI",
     },
-    // {
-    //   name: "Video Generation",
-    //   icon: Video,
-    //   path: "/dashboard/tools-old/video",
-    //   description: "Generate videos with AI",
-    // },
+    {
+      name: "AI Agent",
+      icon: MessageSquare,
+      path: "/dashboard/agent-store",
+      description: "Explore and use AI agents",
+    },
     {
       name: "LLM Agent",
       icon: Mic,
       path: "/dashboard/tools-old/agent",
       description: "Interact with voice-enabled AI",
-    },
-    {
-      name: "Multi AI Tool",
-      icon: Zap,  
-      path: "/dashboard/tools-old/multi-ai",
-      description: "Combine multiple models in one tool",
     },
   ];
 
@@ -228,9 +222,7 @@ const navLinks = [
                 {/* Right Side - All Nav Links + CTA */}
                 <div className="hidden sm:flex items-center gap-2 md:gap-4 lg:gap-6">
                   {/* Models Dropdown */}
-                  <DropdownMenu 
-                  // onOpenChange={(open) => setIsExpanded(open)}
-                    >
+                  <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <motion.button
                         className="text-xs md:text-sm cursor-pointer text-white hover:text-white/90 transition-colors duration-200 flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg hover:bg-white/10"
@@ -241,14 +233,60 @@ const navLinks = [
                         <ChevronDown className="w-3 h-3 md:w-3.5 md:h-3.5 text-white" />
                       </motion.button>
                     </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="center"
+                      sideOffset={20}
+                      className="w-[520px] p-4 grid grid-cols-2 gap-2 backdrop-blur-2xl bg-white/95 dark:bg-zinc-950/95 border border-black/5 dark:border-white/10 rounded-2xl shadow-2xl"
+                    >
+                      {agenticToolsItems.map((item) => (
+                        <DropdownMenuItem
+                          key={item.name}
+                          onClick={() => router.push(item.path)}
+                          className="flex items-start gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/5 focus:bg-white/5 transition-colors border-none outline-none"
+                        >
+                          <div className="p-2.5 rounded-lg bg-white/5 text-purple-400">
+                            <item.icon size={20} />
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-bold text-sm text-zinc-900 dark:text-white">{item.name}</span>
+                            <span className="text-xs text-zinc-500 dark:text-zinc-400">{item.description}</span>
+                          </div>
+                        </DropdownMenuItem>
+                      ))}
+                      <div className="col-span-2 mt-2 pt-3 border-t border-white/10 px-2">
+                        <button
+                          onClick={() => router.push("/dashboard/feed")}
+                          className="text-sm font-semibold text-purple-600 dark:text-purple-400"
+                        >
+                          View all models <span className="text-lg">→</span>
+                        </button>
+                      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  {/* Features Dropdown */}
+                  <DropdownMenu 
+                  // onOpenChange={(open) => setIsExpanded(open)}
+                    >
+                    <DropdownMenuTrigger asChild>
+                      <motion.button
+                        className="text-xs md:text-sm cursor-pointer text-white hover:text-white/90 transition-colors duration-200 flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg hover:bg-white/10"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Features
+                        <ChevronDown className="w-3 h-3 md:w-3.5 md:h-3.5 text-white" />
+                      </motion.button>
+                    </DropdownMenuTrigger>
                    <DropdownMenuContent 
                         align="center" 
                         sideOffset={20} 
                         className="w-[520px] p-4 grid grid-cols-2 gap-2 backdrop-blur-2xl bg-white/95 dark:bg-zinc-950/95 border border-black/5 dark:border-white/10 rounded-2xl shadow-2xl"
                       >
-                        {agenticToolsItems.map((item) => (
+                        {featuresMenuItems.map((item) => (
                           <DropdownMenuItem 
                             key={item.name} 
+                            onClick={() => router.push(item.path)}
                             className="flex items-start gap-3 p-3 rounded-xl cursor-pointer hover:bg-white/5 focus:bg-white/5 transition-colors border-none outline-none"
                           >
                             <div className="p-2.5 rounded-lg bg-white/5 text-purple-400">
@@ -263,8 +301,11 @@ const navLinks = [
   
   {/* The "View all tools" footer link */}
   <div className="col-span-2 mt-2 pt-3 border-t border-white/10 px-2">
-    <button className="text-sm font-semibold text-purple-600 dark:text-purple-400">
-      View all tools <span className="text-lg">→</span>
+    <button
+      onClick={() => router.push("/dashboard")}
+      className="text-sm font-semibold text-purple-600 dark:text-purple-400"
+    >
+      Explore dashboard <span className="text-lg">→</span>
     </button>
   </div>
               </DropdownMenuContent>
@@ -316,21 +357,25 @@ const navLinks = [
   </DropdownMenuContent>
 </DropdownMenu>
 
-<DropdownMenu onOpenChange={(open) => setIsExpanded(open)}>
+{/* <DropdownMenu onOpenChange={(open) => setIsExpanded(open)}>
     <DropdownMenuTrigger asChild>
       <motion.button className="text-xs md:text-sm cursor-pointer text-white hover:text-white/90 transition-colors duration-200 flex items-center gap-1.5 px-2 md:px-3 py-1.5 rounded-lg hover:bg-white/10 outline-none">
         Learn <ChevronDown className="w-3 h-3 md:w-3.5 md:h-3.5 text-white" />
       </motion.button>
     </DropdownMenuTrigger>
     <DropdownMenuContent align="center" sideOffset={20} className="w-[280px] p-2 backdrop-blur-2xl bg-white/95 dark:bg-zinc-950/95 border border-black/5 dark:border-white/10 rounded-xl shadow-2xl">
-      {learnItems.map((item) => (
-        <DropdownMenuItem key={item.name} className="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer text-zinc-900 dark:text-white transition-colors border-none outline-none focus:bg-transparent data-[highlighted]:bg-transparent">
+       {learnItems.map((item) => (
+        <DropdownMenuItem
+          key={item.name}
+          onClick={() => router.push(item.path)}
+          className="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer text-zinc-900 dark:text-white transition-colors border-none outline-none focus:bg-transparent data-[highlighted]:bg-transparent"
+        >
           <item.icon size={16} className="text-purple-400" />
           <span className="font-bold text-sm text-zinc-900 dark:text-white">{item.name}</span>
         </DropdownMenuItem>
-      ))}
+      ))} 
     </DropdownMenuContent>
-  </DropdownMenu>
+  </DropdownMenu> */}
 
   <motion.button onClick={() => router.push("/pricing")} className="text-xs md:text-sm text-white px-3 py-1.5 rounded-lg hover:bg-white/10">
     Pricing
@@ -516,7 +561,7 @@ const navLinks = [
           onClick={(e) => {
             e.preventDefault();
             setIsOpen(false);
-            if (item.name) router.push(item.name);
+            router.push(item.path);
           }}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-foreground dark:text-white hover:text-foreground dark:hover:text-white/90 hover:bg-accent/50 dark:hover:bg-white/10 transition-colors"
           whileHover={{ x: 4 }}
@@ -571,12 +616,12 @@ const navLinks = [
                 </div>
 
                 {navLinks.map((link) =>
-                  link.name ? (
+                  link.path ? (
                     <motion.button
                       key={link.name}
                       onClick={() => {
                         setIsOpen(false);
-                        router.push(link.name!);
+                        router.push(link.path!);
                       }}
                       className="block w-full text-left px-3 py-2.5 rounded-lg text-sm text-foreground dark:text-white hover:text-foreground dark:hover:text-white/90 hover:bg-accent/50 dark:hover:bg-white/10 transition-colors"
                       whileHover={{ x: 4 }}

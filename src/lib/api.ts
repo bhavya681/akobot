@@ -1059,6 +1059,7 @@ export const customAgentAPI = {
       /** When true (e.g. chat opened in new tab as widget), 401 does not clear tokens so main window stays logged in. */
       widgetMode?: boolean;
       onChunk?: (text: string) => void;
+      onJson?: (payload: Record<string, unknown>) => void;
       onDone?: () => void;
       onError?: (err: Error) => void;
     }
@@ -1153,6 +1154,7 @@ export const customAgentAPI = {
     if (contentType.includes("application/json")) {
       try {
         const data = (await res.json()) as Record<string, unknown>;
+        params.onJson?.(data);
         const text =
           (data.response as string) ??
           (data.answer as string) ??
@@ -1344,6 +1346,34 @@ export const customAgentAPI = {
       const last = logs[logs.length - 1];
       if (typeof last === "string") message = last;
     }
+
+    return { ...raw, status, progress, message };
+  },
+
+  /** GET /custom-agent/{agentId}/analytics/progress/{jobId} - Check async analytics (Business Analyst) job status */
+  getAnalyticsProgress: async (
+    agentId: string,
+    jobId: string
+  ): Promise<{ status?: string; progress?: number; message?: string; [k: string]: unknown }> => {
+    const response = await customAgentRequest(`/${agentId}/analytics/progress/${jobId}`, { method: "GET" });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error((err as { message?: string }).message || "Failed to fetch analytics progress");
+    }
+    const raw = await response.json();
+    const status = raw.status ?? (raw as { state?: string }).state;
+
+    let progress: number | undefined;
+    if (typeof raw.progress === "number") {
+      progress = raw.progress;
+    } else if (typeof (raw as { progress_percent?: number }).progress_percent === "number") {
+      progress = (raw as { progress_percent: number }).progress_percent;
+    }
+
+    const message =
+      raw.message ??
+      (raw as { detail?: string }).detail ??
+      (raw as { description?: string }).description;
 
     return { ...raw, status, progress, message };
   },
