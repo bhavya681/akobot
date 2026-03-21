@@ -292,7 +292,7 @@ export default function ToolUsecasePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#05070d] dark:text-white transition-colors duration-300">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+      <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         {/* Header: title + subtitle left; search + category right */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
